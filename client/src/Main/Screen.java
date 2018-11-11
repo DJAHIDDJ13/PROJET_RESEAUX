@@ -5,5 +5,5 @@ import java.awt.event.MouseEvent;
 
 public interface Screen {
 	public void display(GamePanel gamePanel);
-	public Screen update(KeyEvent key, MouseEvent mouse);
+	public Screen respondToEvent(KeyEvent key, MouseEvent mouse);
 }

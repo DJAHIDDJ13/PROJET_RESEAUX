@@ -1,0 +1,17 @@
+﻿DROP TABLE Administrator CASCADE;
+DROP TABLE Account CASCADE;
+DROP TABLE Theme CASCADE;
+DROP TABLE Guest CASCADE;
+DROP TABLE Discussion CASCADE;
+DROP TABLE Notification CASCADE;
+DROP TABLE Invitation CASCADE;
+DROP TABLE Message CASCADE;
+DROP TABLE Receive CASCADE;
+DROP TABLE Users CASCADE;
+DROP TABLE Events CASCADE;
+DROP TABLE Participate CASCADE;
+DROP FUNCTION Check_User_Signup_Date;
+DROP FUNCTION Check_User_Participation_Date;
+DROP FUNCTION Check_Message_Sending_Date;
+DROP FUNCTION Check_Discussion_Date;
+DROP FUNCTION Check_Proposition_Date;

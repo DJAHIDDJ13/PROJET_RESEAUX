@@ -4,20 +4,19 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
-
-public class GameScreen implements Screen {
+public class StartScreen implements Screen {
 	
 	@Override
 	public void display(GamePanel gamePanel) {
-		gamePanel.setBackground(Color.white);
+		gamePanel.setBackground(Color.black);
 	}
-	@Override
-	public Screen update(KeyEvent key, MouseEvent mouse) {
-		char keyChar = (key == null)?0:key.getKeyChar();
 
-		if(keyChar == 'd') {
-			System.out.println("CCOUT");
-			return new StartScreen();
+	@Override
+	public Screen respondToEvent(KeyEvent key, MouseEvent mouse) {
+		char keyChar = (key == null)?0:key.getKeyChar();
+		if(keyChar == 'c') {
+			System.out.println("CCIN");
+			return new GameScreen();
 		}
 		else 
 			return this;
