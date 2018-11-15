@@ -33,76 +33,76 @@ VALUES
 
 -- Table : Invitation 
 INSERT INTO 
-Invitation 	(Invitation_ID ,Invitation_Date,Acceptance_Date,acceptance_time,username_receiver,username_sender)
+Invitation 	(Invitation_Date,Acceptance_Date,acceptance_time,username_receiver,username_sender)
 VALUES 
-		(1             ,'2018/10/20'   ,'2018/10/20'   ,'12:54'        ,'betty98'        ,'adam123'      ),
-		(2             ,'2018/10/24'   ,'2018/10/25'   ,'14:25'        ,'carol666'       ,'adam123'      ),
-		(3             ,'2018/10/16'   ,'2018/10/20'   ,'9:25'         ,'raphael42'      ,'adam123'      ),
-		(4             ,'2018/10/19'   ,'2018/10/20'   ,'5:14'         ,'betty98'        ,'betty98'      ),
-		(5             ,'2018/10/24'   ,null           ,null           ,'2018omar'       ,'carol666'     ),
-		(6             ,'2018/10/26'   ,'2018/10/26'   ,'15:51'        ,'chris2999'      ,'carol666'     ),
-		(7             ,'2018/10/26'   ,'2018/10/26'   ,'16:16'        ,'betty98'        ,'carol666'     ),
-		(8             ,'2018/10/16'   ,'2018/10/16'   ,'19:15'        ,'adam123'        ,'chris2999'    );
+		('2018/10/20'   ,'2018/10/20'   ,'12:54'        ,'betty98'        ,'adam123'      ),
+		('2018/10/24'   ,'2018/10/25'   ,'14:25'        ,'carol666'       ,'adam123'      ),
+		('2018/10/16'   ,'2018/10/20'   ,'9:25'         ,'raphael42'      ,'adam123'      ),
+		('2018/10/19'   ,'2018/10/20'   ,'5:14'         ,'betty98'        ,'betty98'      ),
+		('2018/10/24'   ,null           ,null           ,'2018omar'       ,'carol666'     ),
+		('2018/10/26'   ,'2018/10/26'   ,'15:51'        ,'chris2999'      ,'carol666'     ),
+		('2018/10/26'   ,'2018/10/26'   ,'16:16'        ,'betty98'        ,'carol666'     ),
+		('2018/10/16'   ,'2018/10/16'   ,'19:15'        ,'adam123'        ,'chris2999'    );
 		
 -- Table : Theme
 
 INSERT INTO 
-Theme		(theme_id,theme_title )
+Theme		(theme_title )
 VALUES
-		(1	 ,'concert'   ),
-		(2	 ,'exposition'),
-		(3	 ,'festival'  ),
-		(4	 ,'concours'  ),
-		(5	 ,'autre'     );
+		('concert'   ),
+		('exposition'),
+		('festival'  ),
+		('concours'  ),
+		('autre'     );
 
 
 -- Table : Guest 
 
 INSERT INTO 
-Guest		(guest_id,guest_title	 )
+Guest		(guest_title	 )
 VALUES 
-		(1	 ,'Tout le Monde'),
-		(2	 ,'Mes Amis'     );
+		('Tout le Monde'),
+		('Mes Amis'     );
 
 
 -- Table : Discussion 
 
 INSERT INTO 
-Discussion 	(discussion_id,discussion_date)
+Discussion 	(discussion_date)
 VALUES 
-		(1	      ,'2018/10/17'   ),
-		(2	      ,'2018/10/17'   ),
-		(3	      ,'2018/10/27'   ),
-		(4	      ,'2018/10/24'   );
+		('2018/10/17'   ),
+		('2018/10/17'   ),
+		('2018/10/27'   ),
+		('2018/10/24'   );
 
 -- Table : Event 
 
 INSERT INTO 
-Events 		(event_id,event_time,event_date  ,event_address                             ,event_city ,event_title   ,description                                                             ,capacity,event_picture,proposition_date,confirmation_date,modification_date,deletion_date,confirmed        ,theme_id,deadline_date,guest_id,username_organizer,discussion_id)
+Events  	   (event_time,event_date  ,event_address                             ,event_city ,event_title   ,description                                                             ,capacity,event_picture,proposition_date,confirmation_date,modification_date,deletion_date,confirmed        ,theme_id,deadline_date,guest_id,username_organizer,discussion_id)
 
 VALUES 
-		(1       ,'18:00'   ,'2018/12/02','1 carrefour de Longchamp-75016 Paris'    ,'Paris'    ,'Human'       ,'Exposition audiovisuel sur les effets de l''etre humain sur la planète',1000    ,null         ,'2018/10/17'    ,'2018/10/17'     ,'2018/10/17'     ,null         ,true             ,2       ,'2018/12/01' ,1       ,'adam123'         ,1 	     ),
-		(2       ,'14:30'   ,'2018/12/12','Accorhotels arena 8 bd de bercy paris 12','Paris'    ,'Indochine 13','Concert de l''artiste Indochine dans son 13 eme tour'                  ,10000   ,null         ,'2018/10/17'    ,'2018/10/17'     ,'2018/10/17'     ,null         ,true             ,1       ,'2018/12/11' ,1       ,'adam123'         ,2   	     ),
-		(3       ,'23:59'   ,'2999/12/31','A'                                       ,'Barcelone','A'           ,null                                                                    ,99999   ,null         ,'2018/10/24'    ,null             ,'2018/10/25'     ,'2018/10/25' ,false            ,4       ,'2018/12/31' ,1       ,'2018omar'        ,4	     ),
-		(4       ,'08:00'   ,'2018/11/16','Île de loisirs de Cergy-Pontoise'        ,'Cergy'    ,'Sortie Parc' ,'On va sortir vers le parc des loisirs'                                 ,200     ,null         ,'2018/10/27'    ,'2018/10/27'     ,'2018/10/30'     ,null         ,true             ,5       ,'2018/11/16' ,2       ,'betty98'         ,3  	     );
+		('18:00'   ,'2018/12/02','1 carrefour de Longchamp-75016 Paris'    ,'Paris'    ,'Human'       ,'Exposition audiovisuel sur les effets de l''etre humain sur la planète',1000    ,null         ,'2018/10/17'    ,'2018/10/17'     ,'2018/10/17'     ,null         ,true             ,2       ,'2018/12/01' ,1       ,'adam123'         ,1 	     ),
+		('14:30'   ,'2018/12/12','Accorhotels arena 8 bd de bercy paris 12','Paris'    ,'Indochine 13','Concert de l''artiste Indochine dans son 13 eme tour'                  ,10000   ,null         ,'2018/10/17'    ,'2018/10/17'     ,'2018/10/17'     ,null         ,true             ,1       ,'2018/12/11' ,1       ,'adam123'         ,2   	     ),
+		('23:59'   ,'2999/12/31','A'                                       ,'Barcelone','A'           ,null                                                                    ,99999   ,null         ,'2018/10/24'    ,null             ,'2018/10/25'     ,'2018/10/25' ,false            ,4       ,'2018/12/31' ,1       ,'2018omar'        ,4	     ),
+		('08:00'   ,'2018/11/16','Île de loisirs de Cergy-Pontoise'        ,'Cergy'    ,'Sortie Parc' ,'On va sortir vers le parc des loisirs'                                 ,200     ,null         ,'2018/10/27'    ,'2018/10/27'     ,'2018/10/30'     ,null         ,true             ,5       ,'2018/11/16' ,2       ,'betty98'         ,3  	     );
 
 -- Table : Notification 
 
 INSERT INTO 
-Notification 	(notification_id,notification_content                                               ,notification_date,notification_time,seen ,username_receiver)
+Notification 	(notification_content                                               ,notification_date,notification_time,seen ,username_receiver)
 VALUES
-		(1              ,'Votre proposition de sortie intitulé "A" à été refusé'            ,'2018/10/25'     ,'15:13'          ,true ,'2018omar' 	),
-		(2              ,'Vous avez été banni de façon permanente'                          ,'2018/10/25'     ,'15:14'          ,true ,'2018omar'	),
-		(3              ,'Votre proposition de sortie intitulé "Human" à été accepté'       ,'2018/10/17'     ,'16:00'          ,true ,'adam123' 	),
-		(4              ,'Votre proposition de sortie intitulé "Indochine 13" a été accepté','2018/10/17'     ,'17:16'          ,true ,'adam123'  	),
-		(5              ,'Votre proposition de sortie intitulé "sortie parc" à été accepté' ,'2018/10/27'     ,'17:21'          ,false,'betty98'  	),
-		(6              ,'betty98 à accepter votre invitation'                              ,'2018/10/20'     ,'12:54'          ,true ,'adam123'  	),
-		(7              ,'carol666 à accepter votre invitation'                             ,'2018/10/25'     ,'14:25'          ,true ,'adam123'  	),
-		(8              ,'raphael42 à accepter votre invitation'                            ,'2018/10/20'     ,'09:25'          ,true ,'adam123'  	),
-		(9              ,'raphael42 à accepter votre invitation'                            ,'2018/10/20'     ,'05:14'          ,true ,'betty98'  	),
-		(10             ,'chris2999 à accepter votre invitation'                            ,'2018/10/26'     ,'15:51'          ,true ,'carol666' 	),
-		(11             ,'betty98 à accepter votre invitation'                              ,'2018/10/26'     ,'16:16'          ,true ,'carol666' 	),
-		(12             ,'adam123 à accepter votre invitation'                              ,'2018/10/16'     ,'19:15'          ,true ,'chris2999'	);
+		('Votre proposition de sortie intitulé "A" à été refusé'            ,'2018/10/25'     ,'15:13'          ,true ,'2018omar' 	),
+		('Vous avez été banni de façon permanente'                          ,'2018/10/25'     ,'15:14'          ,true ,'2018omar'	),
+		('Votre proposition de sortie intitulé "Human" à été accepté'       ,'2018/10/17'     ,'16:00'          ,true ,'adam123' 	),
+		('Votre proposition de sortie intitulé "Indochine 13" a été accepté','2018/10/17'     ,'17:16'          ,true ,'adam123'  	),
+		('Votre proposition de sortie intitulé "sortie parc" à été accepté' ,'2018/10/27'     ,'17:21'          ,false,'betty98'  	),
+		('betty98 à accepter votre invitation'                              ,'2018/10/20'     ,'12:54'          ,true ,'adam123'  	),
+		('carol666 à accepter votre invitation'                             ,'2018/10/25'     ,'14:25'          ,true ,'adam123'  	),
+		('raphael42 à accepter votre invitation'                            ,'2018/10/20'     ,'09:25'          ,true ,'adam123'  	),
+		('raphael42 à accepter votre invitation'                            ,'2018/10/20'     ,'05:14'          ,true ,'betty98'  	),
+		('chris2999 à accepter votre invitation'                            ,'2018/10/26'     ,'15:51'          ,true ,'carol666' 	),
+		('betty98 à accepter votre invitation'                              ,'2018/10/26'     ,'16:16'          ,true ,'carol666' 	),
+		('adam123 à accepter votre invitation'                              ,'2018/10/16'     ,'19:15'          ,true ,'chris2999'	);
 
 -- Table : Participate
 
@@ -123,17 +123,17 @@ Participate     (username_participant,event_id,subscription_date,unsubscription_
 -- Table : Message 
 
 INSERT INTO 
-Message 	(Message_ID,Message_Content			     ,Sending_Date,Sending_Time,Username_Transmitter,Discussion_ID)
+Message 	(Message_Content			     ,Sending_Date,Sending_Time,Username_Transmitter,Discussion_ID)
 
 VALUES 
-		(1         ,'Bienvenue a cette sortie'               ,'2018/10/17','15:03'     ,'adam123'           ,1            ),
-		(2         ,'Merci'                                  ,'2018/10/26','15:10'     ,'carol666'          ,1            ),
-		(3         ,'Bonjour'                                ,'2018/10/18','15:00'     ,'adam123'           ,2            ),
-		(4         ,'Salut'                                  ,'2018/10/18','16:01'     ,'raphael42'         ,2            ),
-		(5         ,'cc'                                     ,'2018/10/19','10:00'     ,'chris2999'         ,2            ),
-		(6         ,'Bonjour'                                ,'2018/10/28','13:54'     ,'carol666'          ,3            ),
-		(7         ,'c est pour quelle heure cette sortie'   ,'2018/10/28','13:56'     ,'carol666'          ,3            ),
-		(8         ,'Salut,c est pour le 16 novembre a 8:00' ,'2018/10/28','14:34'     ,'betty98'           ,3            );
+		('Bienvenue a cette sortie'               ,'2018/10/17','15:03'     ,'adam123'           ,1            ),
+		('Merci'                                  ,'2018/10/26','15:10'     ,'carol666'          ,1            ),
+		('Bonjour'                                ,'2018/10/18','15:00'     ,'adam123'           ,2            ),
+		('Salut'                                  ,'2018/10/18','16:01'     ,'raphael42'         ,2            ),
+		('cc'                                     ,'2018/10/19','10:00'     ,'chris2999'         ,2            ),
+		('Bonjour'                                ,'2018/10/28','13:54'     ,'carol666'          ,3            ),
+		('c est pour quelle heure cette sortie'   ,'2018/10/28','13:56'     ,'carol666'          ,3            ),
+		('Salut,c est pour le 16 novembre a 8:00' ,'2018/10/28','14:34'     ,'betty98'           ,3            );
 
 
 

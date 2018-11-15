@@ -9,8 +9,24 @@
 		$result = pg_execute($db, "db_user_search", array($username, $start_signup_date, $end_signup_date));
 		return $result;
 	}
-	function ban_user($uname) {
-		// do stuff
+	function ban_user($db, $uname) {	
+		pg_prepare($db, "db_user_get", "SELECT * FROM Users WHERE Username=$1");
+		pg_prepare($db, "db_user_delete", "UPDATE Users SET Modification_Date=$1, Deletion_Date=$1 WHERE Username=$2");
+		pg_prepare($db, "db_user_send_ban_notif", "INSERT INTO Notification(Notification_Content, Notification_Date, Notification_Time, Seen , Username_Receiver) VALUES ('Vous avez été banni de façon permanente', $1, $2, false, $3)");
+		$result = pg_execute($db, "db_user_get", array($uname));
+		if(pg_num_rows($result)) {
+			$row = pg_fetch_row($result);
+			if($row[14] != null) {
+				echo "<p>account already suspended</p>";
+			} else {
+				pg_execute($db, "db_user_delete", array(date('j-m-Y'), $uname));
+				echo "<p>suspended account '".$uname."'</p>";
+				pg_execute($db, "db_user_send_ban_notif", array(date("d-m-Y"), date("H:i:s") , $uname));
+				echo "<p>sent notification</p>";
+			}
+		} else {
+			echo "<p>user '".$uname."' not in database</p>";
+		}
 	}
 	function show_users($result) {
 		if(pg_num_rows($result) == 0) {
@@ -79,7 +95,7 @@
 					$result = search_users($db, $_POST["uname"], $_POST["StartSingupDate"], $_POST["EndSignupDate"]);
 					show_users($result);
 				} else if(isset($_POST["ban_uname"])) {
-					ban_user($_POST["ban_uname"]);
+					ban_user($db, $_POST["ban_uname"]);
 				}
 			?>
 		</div>
