@@ -9,23 +9,16 @@ if(isset($_SESSION['pseudo'])) {
 
 if(!empty($_POST)) {
 	extract($_POST);
-	$username = trim($username);
-	$user_password = trim($user_password);
+	$username = $username;
+	$user_password = $user_password;
 
-	pg_prepare($db, "db_account", "SELECT * from Account WHERE Username = $1");
-	pg_prepare($db, "db_admin", "SELECT * FROM Administrator WHERE Admin_Username = $1");
+	pg_prepare($db, "db_account", "SELECT * from Account WHERE (Username=$1) AND (Is_Admin=true)");
 	
 	$result = pg_execute($db, "db_account", array($username));
 	$result_data = pg_fetch_assoc($result);
 	pg_free_result($result);
-
-	$result_admin =  pg_execute($db, "db_admin", array($result_data['username']));
-	$result_admin_data = pg_fetch_assoc($result_admin);
-	pg_free_result($result_admin);
-	
-	if($result_admin_data['admin_username'] && password_verify($user_password, $result_data['user_password'])) {
+	if(password_verify($user_password, $result_data['user_password'])) {
 		$_SESSION['username'] = $result_data['username'];
-		$_SESSION['user_password'] = $result_data['user_password'];
 		header('Location: acceuil_admin.php');
 		exit;
 	} else {

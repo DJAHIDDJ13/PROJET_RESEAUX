@@ -1,6 +1,12 @@
 <?php
+
 	include_once('includes.php');
 	session_start();
+
+	if(!isset($_SESSION['username'])){
+	header('Location: connexion_form.php');
+	exit;
+}
 
 	function search_users($db, $username, $start_signup_date, $end_signup_date) {
 		pg_prepare($db, "db_user_search", "SELECT * FROM Users Where (STRPOS(Username, $1)>0 OR $1='') AND (Signup_Date>=$2 OR $2 IS NULL) AND (Signup_Date<=$3 OR $3 IS NULL)");
@@ -9,8 +15,9 @@
 		$result = pg_execute($db, "db_user_search", array($username, $start_signup_date, $end_signup_date));
 		return $result;
 	}
+
 	function ban_user($db, $uname) {	
-		pg_prepare($db, "db_user_get", "SELECT * FROM Users WHERE Username=$1");
+		pg_prepare($db, "db_user_get", "SELECT * FROM Users WHERE Username=$1 AND (Is_Admin=0)");
 		pg_prepare($db, "db_user_delete", "UPDATE Users SET Modification_Date=$1, Deletion_Date=$1 WHERE Username=$2");
 		pg_prepare($db, "db_user_send_ban_notif", "INSERT INTO Notification(Notification_Content, Notification_Date, Notification_Time, Seen , Username_Receiver) VALUES ('Vous avez été banni de façon permanente', $1, $2, false, $3)");
 		$result = pg_execute($db, "db_user_get", array($uname));
@@ -28,6 +35,7 @@
 			echo "<p>user '".$uname."' not in database</p>";
 		}
 	}
+	
 	function show_users($result) {
 		if(pg_num_rows($result) == 0) {
 			echo '<p>Aucune resultat trouvé</p>';
@@ -44,7 +52,6 @@
 			$i = 0;
 			
 			while ($row = pg_fetch_row($result)) {
-
 				echo '<div class="user_table_row">';
 				$count = count($row);
 				$y = 0;
@@ -75,13 +82,25 @@
 	<header>
 		<title>User control center</title>
 		<style>
-			.user_table    { display: table; }
-			.user_table_row       { display: table-row; }
+			.user_table    		{ display: table; }
+			.user_table_row   	{ display: table-row; }
 			.user_table_head    { display: table-header-group; }
 			.user_table_cell, .user_table_head  { display: table-cell; }
 		</style>
 	</header>
 	<body>
+
+		Hello 
+			<a href="acceuil_admin.php">Acceuil</a> 
+			<a href="sorties_valider.php">Sorties à valider</a>
+			<a href="user_control.php">Utilisateurs</a>
+			<a href="deconnexion.php">Se Déconnecter</a>
+		<p>Bonjour </br> 
+
+		    <label>Username :<?php echo $_SESSION['username'] ?></label></br></br>
+		    
+
+	    </p>
 		<form action="" method="post">
 			Username: <input type="text" name="uname"><br>
 			Start signup date: <input type="date" name="StartSingupDate"><br>
@@ -102,3 +121,4 @@
 	</body>
 
 </html>
+

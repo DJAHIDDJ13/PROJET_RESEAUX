@@ -71,12 +71,10 @@ END;$$ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE TABLE Account (
 	Username VARCHAR(255) NOT NULL PRIMARY KEY,
-	User_Password VARCHAR(255) NOT NULL
+	User_Password VARCHAR(255) NOT NULL,
+	Is_Admin BOOLEAN
 );
 
-CREATE TABLE Administrator (
-	Admin_Username VARCHAR(255) REFERENCES Account(Username) PRIMARY KEY
-);
 
 CREATE TABLE Users (
 	Username VARCHAR(255) REFERENCES Account(Username) PRIMARY KEY,
