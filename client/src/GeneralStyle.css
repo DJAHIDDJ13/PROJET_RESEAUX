@@ -1,0 +1,19 @@
+.root {
+    -fx-background-color: #383838;
+}
+
+.root > Label {
+    -fx-text-fill: #FAFAFA;
+}
+
+Hyperlink {
+    -fx-text-fill: #0202F0;
+}
+
+.root > AnchorPane {
+    -fx-background-color: #ec3939;
+}
+
+Button {
+    -fx-text-fill: #000000;
+}
