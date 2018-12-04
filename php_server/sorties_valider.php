@@ -36,7 +36,7 @@
 	}
 	
 
-	function events_non_confirme($db,$now){
+	function events_non_confirme($db, $now){
 
 		$chaine='';
 		$result = pg_query($db,"SELECT * FROM events WHERE confirmation_date IS NULL and event_date >= '".$now."' AND deletion_date IS NULL");
@@ -45,13 +45,13 @@
 			$chaine.="Aucune proposition pour le moment";
 		}else{
 			while ($row = pg_fetch_assoc($result)) {
-			$chaine.="<tr>
-				<td>".$row['username_organizer']."</td>
-				<td>".get_theme($db,$row['theme_id'])."</td>
-				<td>".$row['event_title']."</td>
-				<td>".$row['event_city']."</td>
-				<td><button type='submit' name='accepter' >Accepter</button></td>
-				<td><button type='submit' name='refuser'>Refuser</button></td>
+			$chaine.="<tr style='border-style: none;'>
+				<td style='border-style: none; padding-left:0.90cm;'>".$row['username_organizer']."</td>
+				<td style='border-style: none; padding-left:0.90cm;'>".get_theme($db,$row['theme_id'])."</td>
+				<td style='border-style: none; padding-left:0.90cm;'>".$row['event_title']."</td>
+				<td style='border-style: none; padding-left:0.90cm;'>".$row['event_city']."</td>
+				<td style='border-style: none; padding-left:1cm;'><button style='background-color:green; border-style:none; color:white; font-size:13pt; padding:10px; ' type='submit' name='accepter' ><i class='fas fa-check f00c' aria-hidden='true'></i></button></td>
+				<td style='border-style: none; padding-left:1cm;'><button style='background-color:red; color: white; font-size:13pt; border-style:none; padding: 12px;' type='submit' name='refuser'><i class='fas fa-times f0c0' aria-hidden='true' ></i></button></td>
 				<input type='hidden' name='event_id' value='".$row['event_id']."' />";
 			}
 		}
@@ -107,35 +107,38 @@
 
 <!DOCTYPE html>
 <html>
-	<header>
-		<title></title>
-	</header>
+	<head>
+		<link rel="stylesheet" type="text/css" href="./style1.css">
+		<title>Recherche des utilisateurs</title>
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+		<title>sorties à valider</title>
+	</head>
 	<body>
-
-		Hello  
-			<a href="acceuil_admin.php">Acceuil</a>
-			<a href="sorties_valider.php">Sorties à valider</a>
-			<a href="user_control.php">Utilisateurs</a>
-			<a href="deconnexion.php">Se Déconnecter</a>
-		<p>Bonjour </br> 
-
-		    <label>Username :<?php echo $_SESSION['username'] ?></label></br></br>
-		    
-
-	    </p>
-
-		<form method="post" action="" >
-			<h1>Les sorties à confirmer </h1>
+<header class="header1">
+		<ul style="margin-top: 0;">
+			<li><a href="acceuil_admin.php"><i class="fa fa-home fa-fw" aria-hidden="true"></i>&nbsp;Acceuil</a></li>
+			<li><a href="sorties_valider.php"><i class="fas fa-search f002" aria-hidden="true"></i>&nbsp;Sorties à valider</a></li>
+			<li><a href="user_control.php"><i class="fas fa-users f0c0" aria-hidden="true"></i>&nbsp;Utilisateurs</a></li>
+			<li><a href="deconnexion.php"><i class="fas fa-sign-out-alt f2f5 "aria-hidden="true"></i>&nbsp;Se Déconnecter</a></li>
+		</ul>
+</header>
+<div class="divadmin">
+		<div class="image1"></div>
+		<div  class="image2"></div>
+		<label>Bonjour <?php echo $_SESSION['username'] ?></label>
+</div>
+		<form method="post" action="" style="float: right; margin-right: 2cm;">
+			<h1 style="margin-top: -9.5cm;">Les propositions de sorties non validées</h1>
 			
-				<table border="2" border-color="black">
-					<thead>
-						<tr>	
-							<td>Organisateur</td>
-							<td>Theme</td>
-							<td>Titre</td>
-							<td>Ville</td>
-							<td>Valider</td>
-							<td>Refuser</td>
+				<table border="2" border-color="lightgrey" style="margin-left: 11cm; border: 1px none white; background-color: white; width: 800px; border-radius: 8px; font-size: 11pt;">
+					<thead style="border-style: none;">
+						<tr style="border: 1px none lightgrey;">	
+							<td class="tdsorties">Organisateur</td>
+							<td class="tdsorties">Theme</td>
+							<td class="tdsorties">Titre</td>
+							<td class="tdsorties">Ville</td>
+							<td class="tdsorties">Valider</td>
+							<td class="tdsorties">Refuser</td>
 						</tr>
 					</thead>
 					<tbody>

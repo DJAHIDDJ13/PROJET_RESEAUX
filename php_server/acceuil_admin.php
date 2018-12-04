@@ -3,11 +3,15 @@
 	session_start();
 	$now = date("d-m-Y");
 
-
-	if(!isset($_SESSION['username'])){
-	header('Location: connexion_form.php');
-	exit;
+	if(!isset($_SESSION['username']) || !isset($_SESSION['password'])){
+		header('Location: connexion_form.php');
+		exit;
 	}
+	if(!isset($_SESSION['is_admin'])) {
+		header('Location: accueil_utilisateur.php');
+		exit;
+	}
+
 
 	function users_city($db){
 
@@ -56,49 +60,57 @@
 ?>
 <!DOCTYPE html>
 <html>
-	<header>
+	<head>
+		<link rel="stylesheet" type="text/css" href="./style1.css">
 		<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 		<title>Acceuil_Admin</title>
-	</header>
+	</head>
 	<body>
-		Hello  
-			<a href="acceuil_admin.php">Acceuil</a>
-			<a href="sorties_valider.php">Sorties à valider</a>
-			<a href="user_control.php">Utilisateurs</a>
-			<a href="deconnexion.php">Se Déconnecter</a>
-		<p>Bonjour </br> 
-
-		    <label>Username :<?php echo $_SESSION['username'] ?></label></br></br>
-		    
-
-	    </p>
-	    
-		<form method="post" action="">
+<header class="header1">
+		<ul style="margin-top: 0;">
+			<li><a href="acceuil_admin.php"><i class="fa fa-home fa-fw" aria-hidden="true"></i>&nbsp;Acceuil</a></li>
+			<li><a href="sorties_valider.php"><i class="fas fa-search f002" aria-hidden="true"></i>&nbsp;Sorties à valider</a></li>
+			<li><a href="user_control.php"><i class="fas fa-users f0c0" aria-hidden="true"></i>&nbsp;Utilisateurs</a></li>
+			<li><a href="deconnexion.php"><i class="fas fa-sign-out-alt f2f5 "aria-hidden="true"></i>&nbsp;Se Déconnecter</a></li>
+		</ul>
+</header>
+<div class="divadmin">
+		<div class="image1"></div>
+		<div  class="image2"></div>
+		<div  style="margin-top: 1cm; right: 3cm; ">
+		<label style="font-size: 14pt; font-family: arial; padding-left: 2.9cm;">Bonjour <?php echo $_SESSION['username'] ?></label>
+	</div>
+</div>
+<section>
 	    <h1> Récaputilatif : </h1>
-	    	Du 
-	    	<input type="date" name="date_1">
-	    	A
-	    	<input type="date" name="date_2">
-	    <input type="submit" value="Recherche" name="rech"> 
-		<h3>Personnes Inscrits : <?php echo $nombres_personnes?></h3>
-		<h3>Sorties Proposées  : <?php echo $nombres_sortie_proposées?></h3>
-		<h3>Sorties Passées    : <?php echo $nombres_sortie_passées?></h3>
+	    <form class="divRech" >
+	    	<div class="datediv"> 
+	    			<label style="padding-left: 1cm; color: #2dc997;">Du :</label> 
+	    			<input  style="padding-left: 1cm; padding-right: 1cm; "  type="date" name="date_1">
+	    			<label style="padding-left: 2cm; color: #2dc997;">A :</label>
+	    			<input style="padding-left: 1cm; padding-right: 1cm; " type="date" name="date_2">
+					<button style=" background-color: white; top: 1cm; font-size:13pt; color: grey;border-style: none;" type="submit"  name="rech"><i class="fas fa-search f002" aria-hidden="true"></i></button>
+			</div>
 		</form>
-
-
-		<h3>Nombre Utilisateurs pour chaque ville</h3>
-		<div id="piechart" style="width: 600px; height: 400px;"></div>
+		<div class="divRes">
+			<p>Personnes Inscrits : <?php echo $nombres_personnes?></p>
+		</div>
+		<div class="divRes">
+			<p>Sorties Proposées  : <?php echo $nombres_sortie_proposées?></p>
+		</div>
+		<div class="divRes">
+			<p>Sorties Passées    : <?php echo $nombres_sortie_passées?></p>
+		</div>
+		<div id="piechart" style="width: 500px; height: 400px; margin-left: 11cm; margin-top: 1cm;"></div>
+</section>
 	</body>
-
-	<footer>
-	</footer>
+	
 	
 	<script type="text/javascript">
       google.charts.load('current', {'packages':['corechart']});
       google.charts.setOnLoadCallback(drawChart);
-
       function drawChart() {
-
         var data = google.visualization.arrayToDataTable([
           ['Ville', 'Nombre de personnes'],
             <?php  
@@ -112,13 +124,10 @@
 	            }  
             ?>
         ]);
-
         var options = {
           title: 'Nombre de personne pour chaque ville'
         };
-
         var chart = new google.visualization.PieChart(document.getElementById('piechart'));
-
         chart.draw(data, options);
       }
     </script>
