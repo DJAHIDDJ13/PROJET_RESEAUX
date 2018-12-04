@@ -15,19 +15,20 @@
 		$result = pg_execute($db, "db_user_search", array($username, $start_signup_date, $end_signup_date));
 		return $result;
 	}
-	function ban_user($db, $uname) {	
-		pg_prepare($db, "db_user_get", "SELECT * FROM Users WHERE Username=$1 AND (Is_Admin=0)");
+	function ban_user($db, $uname) {
+		pg_prepare($db, "db_user_get", "SELECT * FROM Users WHERE Username=$1");
 		pg_prepare($db, "db_user_delete", "UPDATE Users SET Modification_Date=$1, Deletion_Date=$1 WHERE Username=$2");
 		pg_prepare($db, "db_user_send_ban_notif", "INSERT INTO Notification(Notification_Content, Notification_Date, Notification_Time, Seen , Username_Receiver) VALUES ('Vous avez été banni de façon permanente', $1, $2, false, $3)");
 		$result = pg_execute($db, "db_user_get", array($uname));
 		if(pg_num_rows($result)) {
-			$row = pg_fetch_row($result);
-			if($row[14] != null) {
+			$row = pg_fetch_assoc($result);
+
+			if($row["deletion_date"] != null) {
 				echo "<p>account already suspended</p>";
 			} else {
-				pg_execute($db, "db_user_delete", array(date('j-m-Y'), $uname));
+				pg_execute($db, "db_user_delete", array(date("Y-m-d"), $uname));
 				echo "<p>suspended account '".$uname."'</p>";
-				pg_execute($db, "db_user_send_ban_notif", array(date("d-m-Y"), date("H:i:s") , $uname));
+				pg_execute($db, "db_user_send_ban_notif", array(date("Y-m-d"), date("H:i:s") , $uname));
 				echo "<p>sent notification</p>";
 			}
 		} else {
@@ -65,8 +66,8 @@
 				$delete_date = current($row);
 				echo '<td class="user_table_cell" style="padding-left:1.25cm;">';
 					echo '<form action=" " method="post" onsubmit="return confirm(\'Etes vous sur de bannir cet utilisateur?\', false)" style="background-color:red; width:48px;">';
-						/*echo '<input  name="ban_uname" value="'.$uname.'">';*/
-						echo '<button name="ban_uname" style="font-size:14pt; color:white; width:48px; background-color:red; border-radius:8px; border-style:none;"><i class="fas fa-user-times" style="padding-bottom:0.25cm; padding-top:0.25cm;"></i></button>';
+						echo '<input  name="ban_uname" value="'.$uname.'" type="hidden">';
+						echo '<button style="font-size:14pt; color:white; width:48px; background-color:red; border-radius:8px; border-style:none;"><i class="fas fa-user-times" style="padding-bottom:0.25cm; padding-top:0.25cm;"></i></button>';
 					echo '</form>';
 				echo '</td>';
 				echo '</tr>';
@@ -90,7 +91,7 @@
 
 
 			}
-			.user_table_row{ 
+			.user_table_row{
 						 font-size: 10pt;
 						 
 						 }
@@ -108,7 +109,7 @@
 				padding-bottom:0.25cm;
 						 
 						 
-						}
+			}
 		</style>
 	</head>
 	<body>
@@ -129,7 +130,7 @@
 			<div class="datediv" style="background-color: white; margin-top: 0cm;margin-top: -9.25cm; margin-left: 11cm; width: 850px; border-radius: 8px; height: 1cm;">
 				<label style="margin-left: 0.95cm;">Username </label> <input type="text" name="uname">
 			<label>Start signup date </label> <input type="date" name="StartSingupDate">
-			<lable>End signup date </label> <input type="date" name="EndSignupDate"></lable>
+			<label>End signup date </label> <input type="date" name="EndSignupDate"></lable>
 			<input type="submit" value="Search" name="search">
 		</div>
 		</form>	
@@ -140,7 +141,7 @@
 					$result = search_users($db, $_POST["uname"], $_POST["StartSingupDate"], $_POST["EndSignupDate"]);
 					show_users($result);
 				} else if(isset($_POST["ban_uname"])) {
-					ban_user($_POST["ban_uname"]);
+					ban_user($db, $_POST["ban_uname"]);
 				}
 			?>
 		</div>
