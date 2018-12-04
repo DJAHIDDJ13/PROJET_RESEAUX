@@ -59,8 +59,10 @@ if(!empty($_POST)) {
 				<input  type="password" name="user_password" placeholder="Password" value="<?php if (isset($user_password)) echo $user_password; ?>" required="required"/></div>
 
 				<button type="submit" class="bouttonConnect"> Se connecter </button>
+				<br>
+				<a href='inscription_form.php'>Vous n'avez pas un compte?</a>
 				<?php 
-				if(isset($_SESSION['flash'])){ 
+					if(isset($_SESSION['flash'])){ 
 				?>
 					<div id="alert" ><a class="close"></a>
 						<?= $_SESSION['flash']; ?>

@@ -1,0 +1,33 @@
+
+
+.input_I{
+	margin-bottom : 20px;
+}
+
+.inscription{
+
+  height: auto ;
+  width: 1000px;
+  background-color: white;
+  margin-top: 50px;
+  font-family: sans-serif;
+  position: center;
+  border-radius: 5px;
+
+}
+
+.inscription button {
+	margin-bottom : 20px;
+}
+
+.inscription p {
+	padding-top: 10px;
+	color: dimgrey;
+	font-weight: lighter;
+	font-size: 20pt;
+}
+
+.Propoform{
+  
+  margin-top :20px;
+}
