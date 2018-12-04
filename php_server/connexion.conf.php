@@ -1,7 +1,7 @@
 <?php
 	function connexion_DB(){
 		$hostname='localhost';
-		// non de la base de donnée 
+		// nom de la base des données
 		$dbname='projdbsortie';
 		// username pgAdmin en local 
 		$user='postgres';

@@ -17,14 +17,14 @@ VALUES
 
 -- Table : Users
 INSERT INTO 
-Users		(Username   ,Email                 ,Last_Name,First_name,Description               ,Birthday_User,Phone_Number,Place_of_Birth,connected,confirmed,User_Picture,Confirmation_Date,Signup_Date ,Modification_Date,Deletion_Date)
+Users	(Username   ,Email                 ,Last_Name,First_name,Description               ,Birthday_User,Phone_Number,Place_of_Birth,connected,confirmed,User_Picture,Confirmation_Date,Signup_Date ,Modification_Date,Deletion_Date,Mime_Type)
 VALUES 
-		('adam123'  ,'Adam123@gmail.com'   ,'west'   ,'adam'    ,null                      ,'1989/01/10' ,'0675475644','Pontoise'    ,true     ,true     ,null        ,'2018/10/16'     ,'2018/10/16','2018/10/16'     ,null         ),
-		('betty98'  ,'Betty98@hotmail.com' ,'crocker','betty'   ,'I like Traveling'        ,'1995/04/25' ,null        ,'Cergy'       ,true     ,true     ,null        ,'2018/10/19'     ,'2018/10/19','2018/10/19'     ,null         ),
-		('carol666' ,'Carol666@hotmail.com','smith'  ,'carol'   ,null                      ,'1998/09/15' ,'0998405185','Versailles'  ,true     ,true     ,null        ,'2018/10/26'     ,'2018/10/24','2018/10/27'     ,null         ),
-		('raphael42','Raphael42@yahoo.fr'  ,'nadal'  ,'raphael' ,'I like going to concerts','1983/02/03' ,null        ,'Cergy'       ,true     ,true     ,null        ,'2018/10/10'     ,'2018/10/10','2018/10/10'     ,null         ),
-		('2018omar' ,'2018omar@gmail.com'  ,'epps'   ,'omar'    ,null                      ,null         ,null        ,null          ,false    ,false    ,null        ,null             ,'2018/10/09','2018/10/25'     ,'2018/10/25' ),
-		('chris2999','Chris2999@gmail.com' ,'griffin','chris'   ,null                      ,'2000/12/19' ,'0769784516','Paris'       ,true     ,true     ,null        ,'2018/09/09'     ,'2018/09/08','2018/09/09'     ,null         );
+		('adam123'  ,'Adam123@gmail.com'   ,'west'   ,'adam'    ,null                      ,'1989/01/10' ,'0675475644','Pontoise'    ,true     ,true     ,null        ,'2018/10/16'     ,'2018/10/16','2018/10/16'     ,null         ,null         ),
+		('betty98'  ,'Betty98@hotmail.com' ,'crocker','betty'   ,'I like Traveling'        ,'1995/04/25' ,null        ,'Cergy'       ,true     ,true     ,null        ,'2018/10/19'     ,'2018/10/19','2018/10/19'     ,null         ,null         ),
+		('carol666' ,'Carol666@hotmail.com','smith'  ,'carol'   ,null                      ,'1998/09/15' ,'0998405185','Versailles'  ,true     ,true     ,null        ,'2018/10/26'     ,'2018/10/24','2018/10/27'     ,null         ,null         ),
+		('raphael42','Raphael42@yahoo.fr'  ,'nadal'  ,'raphael' ,'I like going to concerts','1983/02/03' ,null        ,'Cergy'       ,true     ,true     ,null        ,'2018/10/10'     ,'2018/10/10','2018/10/10'     ,null         ,null         ),
+		('2018omar' ,'2018omar@gmail.com'  ,'epps'   ,'omar'    ,null                      ,null         ,null        ,null          ,false    ,false    ,null        ,null             ,'2018/10/09','2018/10/25'     ,'2018/10/25' ,null         ),
+		('chris2999','Chris2999@gmail.com' ,'griffin','chris'   ,null                      ,'2000/12/19' ,'0769784516','Paris'       ,true     ,true     ,null        ,'2018/09/09'     ,'2018/09/08','2018/09/09'     ,null         ,null         );
 
 -- Table : Invitation 
 INSERT INTO 
@@ -73,13 +73,13 @@ VALUES
 -- Table : Event 
 
 INSERT INTO 
-Events  	   (event_time,event_date  ,event_address                             ,event_city ,event_title   ,description                                                             ,capacity,event_picture,proposition_date,confirmation_date,modification_date,deletion_date,confirmed        ,theme_id,deadline_date,guest_id,username_organizer,discussion_id)
+Events  	   (event_time,event_date  ,event_address                             ,event_city ,event_title   ,description                                                             ,capacity,event_picture,proposition_date,confirmation_date,modification_date,deletion_date,confirmed        ,theme_id,deadline_date,guest_id,username_organizer,discussion_id,Mime_Type)
 
 VALUES 
-		   ('18:00'   ,'2019/02/02','1 carrefour de Longchamp-75016 Paris'    ,'Paris'    ,'Human'       ,'Exposition audiovisuel sur les effets de l''etre humain sur la planète',1000    ,null         ,'2018/10/17'    ,null             ,'2018/10/17'     ,null         ,false            ,2       ,'2018/12/01' ,1       ,'adam123'         ,1 	     ),
-		   ('14:30'   ,'2019/02/12','Accorhotels arena 8 bd de bercy paris 12','Paris'    ,'Indochine 13','Concert de l''artiste Indochine dans son 13 eme tour'                  ,10000   ,null         ,'2018/10/17'    ,null             ,'2018/10/17'     ,null         ,false            ,1       ,'2018/12/11' ,1       ,'adam123'         ,2   	     ),
-		   ('23:59'   ,'2999/12/31','A'                                       ,'Barcelone','A'           ,null                                                                    ,99999   ,null         ,'2018/10/24'    ,null             ,'2018/10/25'     ,'2018/10/25' ,false            ,4       ,'2018/12/31' ,1       ,'2018omar'        ,4	     ),
-		   ('08:00'   ,'2019/01/16','Île de loisirs de Cergy-Pontoise'        ,'Cergy'    ,'Sortie Parc' ,'On va sortir vers le parc des loisirs'                                 ,200     ,null         ,'2018/10/27'    ,'2018/10/27'     ,'2018/10/30'     ,null         ,true             ,5       ,'2018/11/16' ,2       ,'betty98'         ,3  	     );
+		   ('18:00'   ,'2019/02/02','1 carrefour de Longchamp-75016 Paris'    ,'Paris'    ,'Human'       ,'Exposition audiovisuel sur les effets de l''etre humain sur la planète',1000    ,null         ,'2018/10/17'    ,'2018/10/17'             ,'2018/10/17'     ,null         ,false            ,2       ,'2018/12/01' ,1       ,'adam123'         ,1 	     ,null         ),
+		   ('14:30'   ,'2019/02/12','Accorhotels arena 8 bd de bercy paris 12','Paris'    ,'Indochine 13','Concert de l''artiste Indochine dans son 13 eme tour'                  ,10000   ,null         ,'2018/10/17'    ,'2018/10/17'             ,'2018/10/17'     ,null         ,false            ,1       ,'2018/12/11' ,1       ,'adam123'         ,2   	     ,null         ),
+		   ('23:59'   ,'2999/12/31','A'                                       ,'Barcelone','A'           ,null                                                                    ,99999   ,null         ,'2018/10/24'    ,'2018/10/24'             ,'2018/10/25'     ,'2018/10/25' ,false            ,4       ,'2018/12/31' ,1       ,'2018omar'        ,4	         ,null         ),
+		   ('08:00'   ,'2019/01/16','Île de loisirs de Cergy-Pontoise'        ,'Cergy'    ,'Sortie Parc' ,'On va sortir vers le parc des loisirs'                                 ,200     ,null         ,'2018/10/27'    ,'2018/10/27'     ,'2018/10/30'     ,null         ,true             ,5       ,'2018/11/16' ,2       ,'betty98'         ,3  	              ,null         );
 
 -- Table : Notification 
 

@@ -10,7 +10,7 @@
 	exit;
 }
 
-	function get_organizer_username($db,$event_id){
+	function get_organizer_username($db,$event_id) {
  		
  		pg_prepare($db, "db_event_organizer_username", "SELECT username_organizer FROM events WHERE event_id=$1");
  		$result = pg_execute($db, "db_event_organizer_username", array($event_id));
@@ -19,16 +19,16 @@
 		return $result ;
 	}
 
-	function create_notification($db,$time,$now,$event_id,$message){
+	function create_notification($db,$time,$now,$event_id,$message) {
 		pg_prepare($db, "db_user_send_ban_notif2", "INSERT INTO Notification(Notification_Content, Notification_Date, Notification_Time, Seen , Username_Receiver) VALUES ($1, $2, $3, false, $4)");
 		$username_organizer = get_organizer_username($db,$event_id);
-		if(isset($username_organizer)){
+		if(isset($username_organizer)) {
 			pg_execute($db, "db_user_send_ban_notif2", array($message, $now, $time, $username_organizer));
 		}	
 
 	}
 
-	function get_theme($db,$theme_ID){
+	function get_theme($db,$theme_ID) {
 		$result = pg_query($db,"SELECT theme_title FROM theme WHERE theme_ID = ".$theme_ID);
 		$result = pg_fetch_assoc($result);
 		$result = $result['theme_title'];
@@ -36,14 +36,14 @@
 	}
 	
 
-	function events_non_confirme($db, $now){
+	function events_non_confirme($db, $now) {
 
 		$chaine='';
 		$result = pg_query($db,"SELECT * FROM events WHERE confirmation_date IS NULL and event_date >= '".$now."' AND deletion_date IS NULL");
 
 		if(pg_num_rows($result) == 0){
 			$chaine.="Aucune proposition pour le moment";
-		}else{
+		} else {
 			while ($row = pg_fetch_assoc($result)) {
 			$chaine.="<tr style='border-style: none;'>
 				<td style='border-style: none; padding-left:0.90cm;'>".$row['username_organizer']."</td>
@@ -59,11 +59,10 @@
 	}
 
 	function accepter_Event($db,$event_id,$now,$time){
-
 		if(isset($event_id)){
 			$result=pg_query($db,"UPDATE events SET confirmation_date='".$now."', modification_date='".$now."',confirmed ='true' WHERE event_id='".$event_id."'");
 			 
-			if($result != null){
+			if($result != null) {
 				$message =" Votre proposition est accéptée";
 				echo $message;
 				create_notification($db, $time, $now, $event_id ,$message);
@@ -71,29 +70,29 @@
 		}
 	}
 
-	function refuser_Event($db,$event_id,$now,$time){
+	function refuser_Event($db, $event_id, $now, $time) {
 		if(isset($event_id)){
 			$result=pg_query($db,"UPDATE events SET confirmation_date='".$now."', modification_date='".$now."',confirmed ='false' WHERE event_id='".$event_id."'");
-			if($result != null){
+			if($result != null) {
 				$message =" Votre proposition est refusée";
 				create_notification($db, $time, $now, $event_id ,$message);
 			}
-		}	
+		}
 	}
 
 	
 
-	if(isset($_POST['accepter'])){
+	if(isset($_POST['accepter'])) {
 		echo 'clique accept';
 		$event_id = $_POST['event_id'];
 		if(isset($event_id)){
 
-			accepter_Event($db,$event_id,$now,$time);	
+			accepter_Event($db, $event_id, $now,$time);	
 		}
 		header('Location: sorties_valider.php');
 	}
 
-	if(isset($_POST['refuser'])){
+	if(isset($_POST['refuser'])) {
 		$event_id = $_POST['event_id'];
 		if(isset($event_id)){
 			refuser_Event($db,$event_id,$now,$time);	
