@@ -7,7 +7,8 @@
 		return 	"<button style='background-color:".$col."; border-style:none; color:white; font-size:13pt; padding:10px;' type='submit' name='joindre'".$dis.">".$mes."</button>";
 	}
 	function join_event($db, $event_id) {
-		if(get_participation_status($db, $event_id)) {  // case when subscribing 
+		$stat = get_participation_status($db, $event_id);
+		if($stat == 1) {  // case when subscribing 
 			pg_prepare($db, "db_user_join_add", "INSERT INTO Participate VALUES ($1, $2, $3, NULL)");
 			pg_prepare($db, "db_user_join_update", "UPDATE Participate SET Unsubscription_date=null, Subscription_date=$1 WHERE Event_ID=$2 AND Username_participant=$3");
 			$result1 = pg_query($db, "SELECT * FROM Participate WHERE username_participant='".$_SESSION["username"]."' AND Event_ID='".$event_id."'");
@@ -20,7 +21,7 @@
 				$result = pg_execute($db, "db_user_join_update", array(date("Y-m-d"), $event_id, $_SESSION['username']));
 				pg_free_result($result);				
 			}
-		} else { // case where unsubscribing
+		} else if($stat == 0){ // case where unsubscribing
 			pg_prepare($db, "db_user_unjoin", "UPDATE Participate SET unsubscription_date=$1 WHERE Event_ID=$2 AND Username_Participant=$3");
 			$result = pg_execute($db, "db_user_unjoin", array(date("Y-m-d"), $event_id, $_SESSION['username']));
 			pg_free_result($result);
@@ -33,13 +34,19 @@
 		return $result_data['confirmation_date'] && !$result_data['deletion_date'] && $result_data['deadline_date'] >= date("Y-m-d") && $result_data['username_organizer'] != $_SESSION['username'];
 	}
 	function get_participation_status($db, $event_id) {
-		if(!get_event_status($db, $event_id)) {
+		$result = pg_query($db, "SELECT * FROM Events WHERE Event_ID=".$event_id);
+		$result_data = pg_fetch_assoc($result);
+		pg_free_result($result);
+		if(!$result_data)
+			return -1;
+			
+		if(!get_event_status($db, $event_id) || (!is_friend_with($db, $result_data['username_organizer']) && $result_data['guest_id'] == 2)) {
 			return -1;
 		}
 		
 		$result = pg_query($db, "SELECT * FROM Participate WHERE Event_ID=".$event_id." AND Username_participant='".$_SESSION['username']."'");
 		$result_data = pg_fetch_assoc($result);
-
+		pg_free_result($result);
 		if($result_data) {
 			if($result_data['unsubscription_date'])
 				return 1;
@@ -50,7 +57,12 @@
 		}
 	}
 	function is_friend_with($db, $username) {
-		g_prepare($db, "db_get_friends", "SELECT * FROM Invitation WHERE Username_Sender=$1 AND Username_Receiver=$2 AND Acceptance_Time IS NOT NULL AND Acceptance_Date IS NOT NULL");
-		
+		$result = pg_query($db, "SELECT * FROM Invitation WHERE ((Username_Sender='".$_SESSION['username']."' AND Username_Receiver='".$username."') OR (Username_Sender='".$username."' AND Username_Receiver='".$_SESSION['username']."')) AND Acceptance_Time IS NOT NULL AND Acceptance_Date IS NOT NULL");
+		$result_data = pg_fetch_assoc($result);
+		pg_free_result($result);
+		if($result_data) {
+			return true;
+		}
+		return false;
 	}
 ?>
