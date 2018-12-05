@@ -14,24 +14,67 @@
 		header('Location: accueil_admin.php');
 		exit;
 	}
-	if(isset($_POST['joindre'])) {
-		join_event($db, $_GET['event_id']);
-		header('Location: event_page.php?event_id='.$_GET['event_id']);
-		exit;
-	}
-	function get_theme($db,$theme_ID){
-		$result = pg_query($db,"SELECT theme_title FROM theme WHERE theme_ID = ".$theme_ID);
-		$result = pg_fetch_assoc($result);
-		$result = $result['theme_title'];
-		return $result ;
-	}
-
 	$result = pg_query("SELECT * from Events WHERE Event_ID=".$_GET['event_id']);
 	$event_info = pg_fetch_assoc($result);
 	if(!$event_info || !$event_info['confirmation_date']){
 		echo "Error: Event_ID doesn't exist";
 		exit;
 	}
+	if(isset($_POST['joindre'])) {
+		join_event($db, $_GET['event_id']);
+		header('Location: event_page.php?event_id='.$_GET['event_id']);
+		exit;
+	}
+	if(isset($_POST['submit_message'])) {
+		post_message($db, $_POST['message_text']);
+		header('Location: event_page.php?event_id='.$_GET['event_id']);
+		exit;
+	}
+	function post_message($db, $message_content) {
+		
+	}
+	function get_theme($db,$theme_ID){
+		$result = pg_query($db,"SELECT theme_title FROM theme WHERE theme_ID = ".$theme_ID);
+		$result_data = pg_fetch_assoc($result);
+		pg_free_result($result);
+		return $result_data['theme_title'];
+	}
+	function get_message_div($db, $message_id) {
+		$result = pg_query($db,"SELECT * FROM Message WHERE Message_id = ".$message_id);
+		$result_data = pg_fetch_assoc($result);
+		pg_free_result($result);
+		$to_ret = '';
+		if($result_data['username_transmitter'] == $_SESSION['username']) {
+			$to_ret .= '<div class="my_message">
+							<b class="right">'.$result_data['username_transmitter'].'</b>
+							<p class="right">'.$result_data['message_content'].'</p>
+							<span class="time-right">'.$result_data['sending_time'].' '.$result_data['sending_date'].'</p>
+						</div>';
+		} else {
+			$to_ret .= '<div class="other_message">
+							<b class="left">'.$result_data['username_transmitter'].'</b>
+							<p class="right">'.$result_data['message_content'].'</p>
+							<span class="time-left">'.$result_data['sending_time'].' '.$result_data['sending_date'].'</p>
+						</div>';	
+		}
+		return $to_ret;
+	}
+	function get_discussion($db, $event_id) {
+		$result = pg_query($db,"SELECT discussion_id FROM Events WHERE event_id = ".$event_id);
+		$result_data = pg_fetch_assoc($result);
+		pg_free_result($result);
+		return $result_data['discussion_id'];
+	}
+	
+	function get_messages($db, $disc_id) {
+		$result = pg_query($db,"SELECT * FROM Message WHERE Discussion_ID=".$disc_id);
+		$to_ret = '';
+		while($result_data = pg_fetch_assoc($result)) {
+			$to_ret .= get_message_div($db, $result_data['message_id']);
+		}
+		return $to_ret;
+	}
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -70,16 +113,22 @@
 			<?echo get_join_button($db, $_GET['event_id']);?>
 		</form>
 	</div>
-	<div class="chat_container">
-		<div clas="chat_header">
-			<h3>Messages de sortie</h3>
-		</div>
-		<div clas="chat_messages"></div>
-		<div clas="chat_bottom">
-			<form action="" method="post">
-				<input type="text" placeholder="Ecrivez votre message" name="text_message"></input>
-				<input type="submit" value="Envoyer" name="submit_message"></input>
-			</form>
-		</div>
-	</div>
+	<? if(get_participation_status($db, $_GET["event_id"]) == 0 || get_participation_status($db, $_GET["event_id"]) == -2) {
+			echo 
+			'<div class="chat_container">
+				<div class="chat_header">
+					<h3>Messages de sortie</h3>
+				</div>
+				<div class="chat_messages">
+					'.get_messages($db, get_discussion($db, $_GET['event_id'])).'
+				</div>
+				<div class="chat_bottom">
+					<form action="" method="post">
+						<input type="text" placeholder="Ecrivez votre message" name="text_message"></input>
+						<input type="submit" value="Envoyer" name="submit_message"></input>
+					</form>
+				</div>
+			</div>';
+		}
+	?>
 </html>

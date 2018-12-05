@@ -1,9 +1,9 @@
 <?php
 	function get_join_button($db, $event_id) {
 		$status = get_participation_status($db, $event_id);
-		$dis = ($status == -1)?" disabled": "";
-		$col = ($status)?($status == -1)?"gray":"green":"red";
-		$mes = ($status)?($status == -1)?"-----------":"Participer":"Abandoner";
+		$dis = ($status < 0)?" disabled": "";
+		$col = ($status)?($status < 0)?"gray":"green":"red";
+		$mes = ($status)?($status < 0)?"-----------":"Participer":"Abandoner";
 		return 	"<button style='background-color:".$col."; border-style:none; color:white; font-size:13pt; padding:10px;' type='submit' name='joindre'".$dis.">".$mes."</button>";
 	}
 	function join_event($db, $event_id) {
@@ -37,9 +37,8 @@
 		$result = pg_query($db, "SELECT * FROM Events WHERE Event_ID=".$event_id);
 		$result_data = pg_fetch_assoc($result);
 		pg_free_result($result);
-		if(!$result_data)
-			return -1;
-			
+		if($result_data['username_organizer'] == $_SESSION['username'])
+			return -2;
 		if(!get_event_status($db, $event_id) || (!is_friend_with($db, $result_data['username_organizer']) && $result_data['guest_id'] == 2)) {
 			return -1;
 		}

@@ -78,7 +78,7 @@ Events     (event_time,event_date  ,event_address                             ,e
 VALUES 
 		   ('18:00'   ,'2019/02/02','1 carrefour de Longchamp-75016 Paris'    ,'Paris'    ,'Human'       ,'Exposition audiovisuel sur les effets de l''etre humain sur la planète',1000    ,null         ,'2018/10/17'    ,'2018/10/17'     ,'2018/10/17'     ,null         ,true            ,2       ,'2019/2/01' ,1       ,'adam123'         ,1 	   ),
 		   ('14:30'   ,'2019/02/12','Accorhotels arena 8 bd de bercy paris 12','Paris'    ,'Indochine 13','Concert de l''artiste Indochine dans son 13 eme tour'                  ,10000   ,null         ,'2018/10/17'    ,'2018/10/17'     ,'2018/10/17'     ,null         ,true            ,1       ,'2019/2/11' ,1       ,'adam123'         ,2   	   ),
-		   ('23:59'   ,'2999/12/31','A'                                       ,'Barcelone','A'           ,null                                                                    ,99999   ,null         ,'2018/10/24'    ,'2018/10/24'     ,'2018/10/25'     ,'2018/10/25' ,false            ,4       ,'2018/12/31' ,1       ,'2018omar'        ,4	       ),
+		   ('23:59'   ,'2999/12/31','A'                                       ,'Barcelone','A'           ,null                                                                    ,99999   ,null         ,'2018/10/24'    ,'2018/10/24'             ,'2018/10/25'     ,'2018/10/25' ,true            ,4       ,'2018/12/31' ,1       ,'2018omar'        ,4	       ),
 		   ('08:00'   ,'2019/01/16','Île de loisirs de Cergy-Pontoise'        ,'Cergy'    ,'Sortie Parc' ,'On va sortir vers le parc des loisirs'                                 ,200     ,null         ,'2018/10/27'    ,'2018/10/27'     ,'2018/10/30'     ,null         ,true             ,5       ,'2019/2/16' ,2       ,'betty98'         ,3  	           );
 
 -- Table : Notification 
@@ -135,7 +135,7 @@ VALUES
 -- Table : Receive 
 
 INSERT INTO 
-Receive 	(message_id,username_receiver,seen_time,seen_date   )
+Receive (message_id,username_receiver,seen_time,seen_date   )
 VALUES 
 		(1	   ,'adam123'  	     ,'15:03'  ,'2018/10/17'),
 		(1	   ,'carol666' 	     ,'15:09'  ,'2018/10/17'),
