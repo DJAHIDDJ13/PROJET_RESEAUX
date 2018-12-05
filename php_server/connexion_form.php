@@ -22,10 +22,10 @@ if(!empty($_POST)) {
 		$_SESSION['password'] = $result_data['user_password'];
 		if($result_data['is_admin'] == 't') {
 			$_SESSION['is_admin'] = 1;
-			header('Location: acceuil_admin.php');
+			header('Location: accueil_admin.php');
 			exit;
 		} else {
-			header('Location: acceuil_utilisateur.php');
+			header('Location: accueil_utilisateur.php');
 			exit;
 		}
 	} else {

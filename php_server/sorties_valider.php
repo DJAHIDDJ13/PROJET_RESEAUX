@@ -6,9 +6,9 @@
 	$time = date("H:i:s");
 	
 	if(!isset($_SESSION['username'])){
-	header('Location: connexion_form.php');
-	exit;
-}
+		header('Location: connexion_form.php');
+		exit;
+	}
 
 	function get_organizer_username($db,$event_id) {
  		
@@ -115,7 +115,7 @@
 	<body>
 <header class="header1">
 		<ul style="margin-top: 0;">
-			<li><a href="acceuil_admin.php"><i class="fa fa-home fa-fw" aria-hidden="true"></i>&nbsp;Acceuil</a></li>
+			<li><a href="accueil_admin.php"><i class="fa fa-home fa-fw" aria-hidden="true"></i>&nbsp;accueil</a></li>
 			<li><a href="sorties_valider.php"><i class="fas fa-search f002" aria-hidden="true"></i>&nbsp;Sorties à valider</a></li>
 			<li><a href="user_control.php"><i class="fas fa-users f0c0" aria-hidden="true"></i>&nbsp;Utilisateurs</a></li>
 			<li><a href="deconnexion.php"><i class="fas fa-sign-out-alt f2f5 "aria-hidden="true"></i>&nbsp;Se Déconnecter</a></li>

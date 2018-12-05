@@ -4,9 +4,9 @@
 	session_start();
 
 	if(!isset($_SESSION['username'])){
-	header('Location: connexion_form.php');
-	exit;
-}
+		header('Location: connexion_form.php');
+		exit;
+	}
 
 	function search_users($db, $username, $start_signup_date, $end_signup_date) {
 		pg_prepare($db, "db_user_search", "SELECT Username, Last_name, First_name, Place_of_Birth, Signup_Date FROM Users Where (STRPOS(Username, $1)>0 OR $1='') AND (Signup_Date>=$2 OR $2 IS NULL) AND (Signup_Date<=$3 OR $3 IS NULL)");
@@ -115,7 +115,7 @@
 	<body>
 <header class="header1">
 		<ul style="margin-top: 0;">
-			<li><a href="acceuil_admin.php"><i class="fa fa-home fa-fw" aria-hidden="true"></i>&nbsp;Acceuil</a></li>
+			<li><a href="accueil_admin.php"><i class="fa fa-home fa-fw" aria-hidden="true"></i>&nbsp;accueil</a></li>
 			<li><a href="sorties_valider.php"><i class="fas fa-search f002" aria-hidden="true"></i>&nbsp;Sorties à valider</a></li>
 			<li><a href="user_control.php"><i class="fas fa-users f0c0" aria-hidden="true"></i>&nbsp;Utilisateurs</a></li>
 			<li><a href="deconnexion.php"><i class="fas fa-sign-out-alt f2f5" aria-hidden="true"></i>&nbsp;Se Déconnecter</a></li>
@@ -127,12 +127,12 @@
 		<label>Bonjour <?php echo $_SESSION['username'] ?></label>
 </div>
 		<form action="" method="post">
-			<div class="datediv" style="background-color: white; margin-top: 0cm;margin-top: -9.25cm; margin-left: 11cm; width: 850px; border-radius: 8px; height: 1cm;">
-				<label style="margin-left: 0.95cm;">Username </label> <input type="text" name="uname">
-			<label>Start signup date </label> <input type="date" name="StartSingupDate">
-			<label>End signup date </label> <input type="date" name="EndSignupDate"></lable>
-			<input type="submit" value="Search" name="search">
-		</div>
+			<div class="datediv" style="background-color: white; margin-top: 0cm;margin-top: -9.25cm; margin-left: 11cm; max-width: 30cm; diplay: block; overflow: auto; border-radius: 8px; height: 1cm;">
+				<label style="margin-left: 0.95cm;">Nom utilisateur </label> <input type="text" name="uname">
+				<label>Date debut d'inscription</label> <input type="date" name="StartSingupDate">
+				<label>Date fin d'inscription</label> <input type="date" name="EndSignupDate"></lable>
+				<input type="submit" value="Recherche" name="search">
+			</div>
 		</form>	
 	</div>
 		<div style="margin-left: 11cm; width: 850px; background-color: white; margin-top: 0.75cm; border-radius:8px; ">

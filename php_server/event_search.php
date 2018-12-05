@@ -7,7 +7,7 @@
 		exit;
 	}
 	if(isset($_SESSION['is_admin'])) {
-		header('Location: accueuil_admin.php');
+		header('Location: accueil_admin.php');
 		exit;
 	}
 
@@ -22,7 +22,7 @@
 	<body>
 		<header class="header1">
 				<ul style="margin-top: 0;">
-					<li><a href="acceuil_utilisateur.php"><i class="fa fa-home fa-fw" aria-hidden="true"></i>&nbsp;Acceuil</a></li>
+					<li><a href="accueil_utilisateur.php"><i class="fa fa-home fa-fw" aria-hidden="true"></i>&nbsp;accueil</a></li>
 					<li><a href="event_search.php"><i class="fas fa-search f002" aria-hidden="true"></i>&nbsp;Chercher une sortie</a></li>
 					<li><a href="user_propose.php"><i class="fas fa-users f0c0" aria-hidden="true"></i>&nbsp;Proposer une sortie</a></li>
 					<li><a href="deconnexion.php"><i class="fas fa-sign-out-alt f2f5 "aria-hidden="true"></i>&nbsp;Se Déconnecter</a></li>
