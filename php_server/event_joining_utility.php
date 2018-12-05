@@ -49,4 +49,8 @@
 			return 1;
 		}
 	}
+	function is_friend_with($db, $username) {
+		g_prepare($db, "db_get_friends", "SELECT * FROM Invitation WHERE Username_Sender=$1 AND Username_Receiver=$2 AND Acceptance_Time IS NOT NULL AND Acceptance_Date IS NOT NULL");
+		
+	}
 ?>
