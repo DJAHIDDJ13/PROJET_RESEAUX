@@ -37,6 +37,7 @@
 <html>
 	<head>
 		<link rel="stylesheet" type="text/css" href="./style1.css">
+		<link rel="stylesheet" type="text/css" href="./event_page.css">
 		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 		<title>Sortie <?php echo $_GET['event_id'];?></title>
 	</head>
@@ -69,7 +70,16 @@
 			<?echo get_join_button($db, $_GET['event_id']);?>
 		</form>
 	</div>
-	
-	<div id="chatroom">
+	<div class="chat_container">
+		<div clas="chat_header">
+			<h3>Messages de sortie</h3>
+		</div>
+		<div clas="chat_messages"></div>
+		<div clas="chat_bottom">
+			<form action="" method="post">
+				<input type="text" placeholder="Ecrivez votre message" name="text_message"></input>
+				<input type="submit" value="Envoyer" name="submit_message"></input>
+			</form>
+		</div>
 	</div>
 </html>

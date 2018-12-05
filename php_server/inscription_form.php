@@ -1,7 +1,7 @@
 <?php
 
 	include_once('includes.php');
-	$now = date("d-m-Y");
+	$now = date("Y-m-d");
 	$time = date("H:i:s");
 
 	if(isset($_POST['register'])){
@@ -41,22 +41,19 @@
 			$error_phone= "Format Telephone invalide ";
 		}
 		//Traiter image 
-		if($_FILES['picture']['name']){
-			$image = $username.$_FILES['picture']['name'];
-			$target = "img/users/".basename($image);
-			if(!move_uploaded_file($_FILES['picture']['tmp_name'], $target)){
-				$valid = false;
-			}
-		}else{
-			$image = null;
+		
+		$image = $_FILES['picture']['name'];
+		$target = "img/users/".basename($image);
+		if(!move_uploaded_file($_FILES['picture']['tmp_name'], $target)){
+			$valid = false;
 		}
 		
 
 		if($valid){
 			// si toutes les variables sont validées on insere le compte ainsi que l'utilisateur 
 			$password = password_hash($password, PASSWORD_DEFAULT);
-			pg_prepare($db, "db_insert_account", "INSERT INTO account (username,user_password,is_admin) VALUES ($1, $2 ,$3)");
-			$inser_a = pg_execute($db, "db_insert_account", array($username, $password ,'false'));
+			pg_prepare($db, "db_insert_account", "INSERT INTO account (username,user_password) VALUES ($1, $2)");
+			$inser_a = pg_execute($db, "db_insert_account", array($username, $password));
 			$_SESSION['flash']=" Votre Compte été créer " ;
 	
 			if($inser_a){
@@ -70,7 +67,7 @@
 					pg_prepare($db, "db_delete_account", "DELETE  FROM account WHERE username=$1");
 					pg_execute($db, "db_delete_account", array($username));
 				}
-			}else{
+			} else {
 				$_SESSION['flash'] ="Erreur à la création du compte " ;
 			}
 		}
@@ -98,123 +95,122 @@
 				}
 				?>
 			</div>
-			<form  method="post" class="inscription" enctype="multipart/form-data" >
-				<p class="title">Inscription</p>
-				<table>
-					<tr >
-						<td>
-							<div >
-							<label >Login:</label>
-							</div>
-				       		<div class="input_I">
-			                    <input  type="text" name="username" placeholder="Login" value="<?php if (isset($_POST['username'])) echo ($username); ?>" required="required"/>
-			                    <div><small ><?php if (isset($error_username)) echo $error_username; ?></small></div>
-			                </div>
-						</td>
-						<td>
-							<div >
-							<label >Mail :</label>
-							</div>
-				       		<div class="input_I">
-			                    <input  type="text" name="mail" placeholder="Mail" value="<?php if (isset($_POST['mail'])) echo $mail; ?>" required="required"/>
-			                    <div><small><?php if (isset($error_mail)) echo $error_mail; ?></small></div>
-			                </div>
-							
-						</td>
-					</tr>
-					<tr >
-						<td>
-							<div >
-							<label class="label_I">Mot de Pass:</label>
-							</div>
-				       		<div class="input_I">
-			                    <input  type="password" name="password" placeholder="Mot de Pass" value="<?php if (isset($_POST['password'])) echo $password; ?>" required="required"/>
-			                    <div><small><?php if (isset($error_pass)) echo $error_pass; ?></small></div>
-			                </div>
-						</td>
-						<td>
-							<div >
-							<label class="label_I" >Confirmer:</label>
-							</div>
-				       		<div class="input_I">
-			                    <input  type="password" name="c_password" placeholder="Confirmer Mot de Pass" value="<?php if (isset($_POST['c_password'])) echo $c_password; ?>" required="required"/>
-			                    <div><small><?php if (isset($error_pass)) echo $error_pass; ?></small></div>
-			                </div>
-						</td>
-					</tr>
-					<tr >
-						<td>
-							<div >
-							<label class="label_I">Nom:</label>
-							</div>
-				       		<div class="input_I">
-			                    <input  type="text" name="lastname" placeholder="Nom" value="<?php if (isset($_POST['lastname'])) echo $lastname; ?>" required="required"/>
-			                </div>
-						</td>
-						<td>
-							<div >
-							<label class="label_I">Prenom:</label>
-							</div>
-				       		<div class="input_I">
-			                    <input  type="text" name="firstname" placeholder="Prenom" value="<?php if (isset($_POST['firstname'])) echo $firstname; ?>" required="required"/>
-			                </div>
-						</td>
-					</tr>
-					<tr >
-						<td>
-							<div >
-							<label class="label_I">Date De Naissance:</label>
-							</div>
-				       		<div class="input_I">
-			                    <input  type="date" name="birthday"  value="<?php if (isset($_POST['birthday'])) echo $birthday ; ?>" required="required"/>
-			                </div>
-						</td>
-						<td>
-							<div >
-							<label class="label_I" >Ville :</label>
-							</div>
-				       		<div class="input_I">
-			                    <input  type="text" name="city" placeholder="Ville" value="<?php if (isset($_POST['city'])) echo $city; ?>" />
-			                    <div><small></small></div>
-			                </div>
-						</td>
-					</tr>
-					<tr >
-						<td>
-							<div >
-							<label class="label_I">Téléphone :</label>
-							</div>
-				       		<div class="input_I">
-			                    <input  type="text" name="phone" placeholder="Télephone : 06 XX XX XX XX " value="<?php if (isset($_POST['phone'])) echo $phone; ?>" />
-			                    <div><small><?php if (isset($error_phone)) echo $error_phone; ?></small></div>
-			                </div>
-						</td>
-						<td>
-							<div>
-							<label >Photo :</label>
-							</div>
-				       		<div class="input_I">
-			                    <input  type="file" name="picture" accept="image/*" />
-			                    <div><small><?php if (isset($error_picture)) echo $error_picture; ?></small></div>
-			                </div>
-						</td>
-					</tr>
-					<tr >
-						<td >
-							<div>
-							<label>Décrivez-vous en quelque lignes :</label>
-							</div>
-				       		<div class="input_I">
-			                    <textarea rows ="4" name="description" placeholder="Description"  >
-			                	</textarea>
-			                </div>
-						</td>
-						<td>
-						</td>
-					</tr>
-				</table>
-				<button type="submit" name="register" accept="image/*" > S'inscrire </button>
-			</form>
+				<form  method="post" class="inscription" enctype="multipart/form-data" >
+					<p class="title">Inscription</p>
+					<table>
+						<tr >
+							<td>
+								<div >
+								<label >Login:</label>
+								</div>
+								<div class="input_I">
+									<input  type="text" name="username" placeholder="Login" value="<?php if (isset($_POST['username'])) echo ($username); ?>" required="required"/>
+									<div><small ><?php if (isset($error_username)) echo $error_username; ?></small></div>
+								</div>
+							</td>
+							<td>
+								<div >
+								<label >Mail :</label>
+								</div>
+								<div class="input_I">
+									<input  type="text" name="mail" placeholder="Mail" value="<?php if (isset($_POST['mail'])) echo $mail; ?>" required="required"/>
+									<div><small><?php if (isset($error_mail)) echo $error_mail; ?></small></div>
+								</div>
+								
+							</td>
+						</tr>
+						<tr >
+							<td>
+								<div >
+								<label class="label_I">Mot de Passe:</label>
+								</div>
+								<div class="input_I">
+									<input  type="password" name="password" placeholder="Mot de Passe" value="<?php if (isset($_POST['password'])) echo $password; ?>" required="required"/>
+									<div><small><?php if (isset($error_pass)) echo $error_pass; ?></small></div>
+								</div>
+							</td>
+							<td>
+								<div >
+								<label class="label_I" >Confirmer:</label>
+								</div>
+								<div class="input_I">
+									<input  type="password" name="c_password" placeholder="Confirmer Mot de Passe" value="<?php if (isset($_POST['c_password'])) echo $c_password; ?>" required="required"/>
+									<div><small><?php if (isset($error_pass)) echo $error_pass; ?></small></div>
+								</div>
+							</td>
+						</tr>
+						<tr >
+							<td>
+								<div >
+								<label class="label_I">Nom:</label>
+								</div>
+								<div class="input_I">
+									<input  type="text" name="lastname" placeholder="Nom" value="<?php if (isset($_POST['lastname'])) echo $lastname; ?>" required="required"/>
+								</div>
+							</td>
+							<td>
+								<div >
+								<label class="label_I">Prenom:</label>
+								</div>
+								<div class="input_I">
+									<input  type="text" name="firstname" placeholder="Prenom" value="<?php if (isset($_POST['firstname'])) echo $firstname; ?>" required="required"/>
+								</div>
+							</td>
+						</tr>
+						<tr >
+							<td>
+								<div >
+								<label class="label_I">Date De Naissance:</label>
+								</div>
+								<div class="input_I">
+									<input  type="date" name="birthday"  value="<?php if (isset($_POST['birthday'])) echo $birthday ; ?>" required="required"/>
+								</div>
+							</td>
+							<td>
+								<div >
+								<label class="label_I" >Ville :</label>
+								</div>
+								<div class="input_I">
+									<input  type="text" name="city" placeholder="Ville" value="<?php if (isset($_POST['city'])) echo $city; ?>" />
+									<div><small></small></div>
+								</div>
+							</td>
+						</tr>
+						<tr >
+							<td>
+								<div >
+								<label class="label_I">Téléphone :</label>
+								</div>
+								<div class="input_I">
+									<input  type="text" name="phone" placeholder="Télephone : 06 XX XX XX XX " value="<?php if (isset($_POST['phone'])) echo $phone; ?>" />
+									<div><small><?php if (isset($error_phone)) echo $error_phone; ?></small></div>
+								</div>
+							</td>
+							<td>
+								<div>
+								<label >Photo :</label>
+								</div>
+								<div class="input_I">
+									<input  type="file" name="picture" />
+									<div><small><?php if (isset($error_picture)) echo $error_picture; ?></small></div>
+								</div>
+							</td>
+						</tr>
+						<tr >
+							<td >
+								<div>
+								<label>Décrivez-vous en quelque lignes :</label>
+								</div>
+								<div class="input_I">
+									<textarea rows ="4" name="description" placeholder="Description"></textarea>
+								</div>
+							</td>
+							<td>
+							</td>
+						</tr>
+					</table>
+					<button type="submit" name="register"> S'inscrire </button>
+				</form>
 			<footer>
 			</footer>
 	</body>
