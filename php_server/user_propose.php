@@ -80,11 +80,22 @@
 
 		if($valid){
 
-			pg_prepare($db,"db_insert_event", "INSERT INTO events (event_time,event_date, event_address,event_city,event_title,description,Capacity,event_picture,deadline_date,proposition_date,modification_date,theme_id,guest_id,username_organizer)
-			VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)");
-			$inser_event = pg_execute($db, "db_insert_event", array($time,$date,$adresse,$city,$title,$description,$capacity,$image,$deadline,$now,$now,$theme,$guest,$_SESSION['username']));
+			pg_prepare($db,"db_insert_discussion", "INSERT INTO discussion (discussion_date)
+			VALUES ($1) RETURNING discussion_id");
+			$inser_d = pg_execute($db, "db_insert_discussion", array($now));
+			$id = pg_fetch_assoc($inser_d);
+			$id_d = $id['discussion_id'];
+			pg_prepare($db,"db_insert_event", "INSERT INTO events (event_time,event_date, event_address,event_city,event_title,description,Capacity,event_picture,deadline_date,proposition_date,modification_date,theme_id,guest_id,username_organizer,discussion_id)
+			VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)");
+			$inser_event = pg_execute($db, "db_insert_event", array($time,$date,$adresse,$city,$title,$description,$capacity,$image,$deadline,$now,$now,$theme,$guest,$_SESSION['username'],$id_d));
+			
 			$_SESSION['flash'] ="Votre Proposition a été enregistré avec succée";
+
+			
+
 		}
+
+
 	}
 
 
