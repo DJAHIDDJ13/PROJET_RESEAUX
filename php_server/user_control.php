@@ -1,7 +1,6 @@
 <?php
 
 	include_once('includes.php');
-	session_start();
 
 	if(!isset($_SESSION['username'])){
 		header('Location: connexion_form.php');

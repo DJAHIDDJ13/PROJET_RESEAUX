@@ -1,8 +1,8 @@
 <?php
 
 	include_once "includes.php";
-	session_start();
-	$now = date("d-m-Y");
+
+	$now = date("Y-m-d");
 	$time = date("H:i:s");
 	
 	if(!isset($_SESSION['username'])){
@@ -59,6 +59,7 @@
 	}
 
 	function accepter_Event($db,$event_id,$now,$time){
+		echo "accept";
 		if(isset($event_id)){
 			$result=pg_query($db,"UPDATE events SET confirmation_date='".$now."', modification_date='".$now."',confirmed ='true' WHERE event_id='".$event_id."'");
 			 

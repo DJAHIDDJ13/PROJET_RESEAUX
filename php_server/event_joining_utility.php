@@ -3,17 +3,17 @@
 		$status = get_participation_status($db, $event_id);
 		$dis = ($status == -1)?" disabled": "";
 		$col = ($status)?($status == -1)?"gray":"green":"red";
-		$mes = ($status)?"Participer":"Abandoner";
+		$mes = ($status)?($status == -1)?"-----------":"Participer":"Abandoner";
 		return 	"<button style='background-color:".$col."; border-style:none; color:white; font-size:13pt; padding:10px;' type='submit' name='joindre'".$dis.">".$mes."</button>";
 	}
-	function join_event($db, $event_id, $now) {
+	function join_event($db, $event_id) {
 		if(get_participation_status($db, $event_id)) {  // case when subscribing 
 			pg_prepare($db, "db_user_join_add", "INSERT INTO Participate VALUES ($1, $2, $3, NULL)");
 			pg_prepare($db, "db_user_join_update", "UPDATE Participate SET Unsubscription_date=null, Subscription_date=$1 WHERE Event_ID=$2 AND Username_participant=$3");
-			$result1 = pg_query($db, "SELECT * FROM Participate WHERE username_participant='".$_SESSION["username"]."' AND Event_ID='".$event_id."'zefazeéé&é'..55");
+			$result1 = pg_query($db, "SELECT * FROM Participate WHERE username_participant='".$_SESSION["username"]."' AND Event_ID='".$event_id."'");
 			$result_data = pg_fetch_assoc($result1);
 			pg_free_result($result1);
-			if($result_data) {
+			if(!$result_data) {
 				$result = pg_execute($db, "db_user_join_add", array($_SESSION['username'], $event_id, date("Y-m-d")));
 				pg_free_result($result);
 			} else {
@@ -30,7 +30,7 @@
 		$result = pg_query($db, "SELECT * FROM Events WHERE Event_ID=".$event_id);
 		$result_data = pg_fetch_assoc($result);
 		pg_free_result($result);
-		return $result_data['confirmation_date'] && !$result_data['deletion_date'] && $result_data['deadline_date'] >= date("Y-m-d");
+		return $result_data['confirmation_date'] && !$result_data['deletion_date'] && $result_data['deadline_date'] >= date("Y-m-d") && $result_data['username_organizer'] != $_SESSION['username'];
 	}
 	function get_participation_status($db, $event_id) {
 		if(!get_event_status($db, $event_id)) {

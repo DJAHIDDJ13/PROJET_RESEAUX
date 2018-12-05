@@ -1,7 +1,7 @@
 <?php
 	include_once('includes.php');
 	include_once('event_joining_utility.php');
-	session_start();
+
 
 	if(!isset($_SESSION['username']) || !isset($_SESSION['password'])) {
 		header('Location: connexion_form.php');
@@ -12,8 +12,7 @@
 		exit;
 	}
 	if(isset($_POST['event_id'])) {
-		$event_id = $_POST['event_id'];
-		join_event($db, $event_id, date("Y-m-d"));
+		join_event($db, $_POST['event_id']);
 		header('Location: accueil_utilisateur.php');
 		exit;
 	}

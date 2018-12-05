@@ -1,6 +1,5 @@
 <?php
 include_once 'includes.php';
-session_start();
 
 if(isset($_SESSION['pseudo'])) {
 	header('Location: accueil.php');
