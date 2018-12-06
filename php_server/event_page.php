@@ -98,25 +98,25 @@
 		</header>
 		<div class="divadmin">
 				<div class="image1"></div>
-				<div class="image2" src="img/<?echo ($event_info['event_picture'])?"users/".$event_info['event_picture']:"default.jpeg";?>"></div>
+				<div class="image2" src="img/<?php echo ($event_info['event_picture'])?"users/".$event_info['event_picture']:"default.jpeg";?>"></div>
 				<div style="margin-top: 1cm; right: 3cm;">
 				<label style="font-size: 14pt; font-family: arial; padding-left: 2.9cm;">Bonjour <?php echo $_SESSION['username'] ?></label>
 			</div>
 		</div>
 	</body>
 	<div id="event_info" style="padding: 30px 30px 30px 30px; float:top; margin-left: 11cm; margin-top: -9.5cm; margin-right: 5%; background-color: white; border: 1px none white; border-radius: 8px; ">
-		<h1><?echo $event_info['event_title']." | ".$event_info['event_city'];?></h1>
-		<h3 align="right">Date: <?echo $event_info['event_date'];?></h3>
-		<h3 align="right">Temps: <?echo $event_info['event_time'];?></h3>
-		<p style="padding-left: 50px;"><?echo $event_info['description'];?></p>
+		<h1><?php echo $event_info['event_title']." | ".$event_info['event_city'];?></h1>
+		<h3 align="right">Date: <?php echo $event_info['event_date'];?></h3>
+		<h3 align="right">Temps: <?php echo $event_info['event_time'];?></h3>
+		<p style="padding-left: 50px;"><?php echo $event_info['description'];?></p>
 		<br>
-		<p>Theme: <?echo get_theme($db, $event_info['theme_id']);?></p>
-		<p>Adresse: <?echo $event_info['event_address'];?></p>
+		<p>Theme: <?php echo get_theme($db, $event_info['theme_id']);?></p>
+		<p>Adresse: <?php echo $event_info['event_address'];?></p>
 		<form method="post" action="" name="joindre">
-			<?echo get_join_button($db, $_GET['event_id']);?>
+			<?php echo get_join_button($db, $_GET['event_id']);?>
 		</form>
 	</div>
-	<? if(get_participation_status($db, $_GET["event_id"]) == 0 || get_participation_status($db, $_GET["event_id"]) == -2) {
+	<?php if(get_participation_status($db, $_GET["event_id"]) == 0 || get_participation_status($db, $_GET["event_id"]) == -2) {
 			echo 
 			'<div class="chat_container">
 				<div class="chat_header">

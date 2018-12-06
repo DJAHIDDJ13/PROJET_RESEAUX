@@ -10,7 +10,7 @@ if(!empty($_POST)) {
 	extract($_POST);
 	$username = $username;
 	$user_password = $user_password;
-	pg_prepare($db, "db_account", "SELECT * from Account WHERE (Username=$1) ");
+	pg_prepare($db, "db_account", "SELECT * from Account WHERE (Username=$1)");
 	
 	$result = pg_execute($db, "db_account", array($username));
 	$result_data = pg_fetch_assoc($result);
