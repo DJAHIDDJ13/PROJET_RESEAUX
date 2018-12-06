@@ -1,22 +1,39 @@
 <?php
 include_once 'includes.php';
 
-if(isset($_SESSION['pseudo'])) {
-	header('Location: accueil.php');
-	exit;
+if(isset($_SESSION['username']) && isset($_SESSION['password'])) {
+	if(isset($_SESSION['is_admin'])) {
+		header('Location: accueil_admin.php');
+		exit;
+	} else {
+		header('Location: accueil_utilisateur.php');
+		exit;
+	}
 }
 
+function is_banned($db, $username) {
+	pg_prepare($db, "db_account", "SELECT * from Users WHERE (Username=$1)");
+	
+	$result = pg_execute($db, "db_account", array($username));
+	$result_data = pg_fetch_assoc($result);
+	pg_free_result($result);
+	if(!$result_data)
+		return false;
+	return $result_data['deletion_date'] != '';
+}
 if(!empty($_POST)) {
 	extract($_POST);
 	$username = $username;
 	$user_password = $user_password;
-	pg_prepare($db, "db_account", "SELECT * from Account WHERE (Username=$1)");
+	pg_prepare($db, "db_ban_test", "SELECT * from Account WHERE (Username=$1)");
 	
-	$result = pg_execute($db, "db_account", array($username));
+	$result = pg_execute($db, "db_ban_test", array($username));
 	$result_data = pg_fetch_assoc($result);
-	
 	pg_free_result($result);
-	if(password_verify($user_password, $result_data['user_password'])) {
+	
+	$is_ban = is_banned($db, $username);
+	echo $is_ban;
+	if(password_verify($user_password, $result_data['user_password']) && !$is_ban) {
 		$_SESSION['username'] = $result_data['username'];
 		$_SESSION['password'] = $result_data['user_password'];
 		if($result_data['is_admin'] == 't') {
@@ -27,6 +44,9 @@ if(!empty($_POST)) {
 			header('Location: accueil_utilisateur.php');
 			exit;
 		}
+	} else if($is_ban){
+		$_SESSION['flash'] = "Vous avez été banni, vous ne pouvez pas connecter a votre compte";
+
 	} else {
 		$_SESSION['flash'] = "Votre mail ou mot de passe ne correspondent pas";
 	}
