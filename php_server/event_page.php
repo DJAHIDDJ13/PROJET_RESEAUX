@@ -26,12 +26,15 @@
 		exit;
 	}
 	if(isset($_POST['submit_message'])) {
-		post_message($db, $_POST['message_text']);
+		post_message($db, $_POST['text_message'], get_discussion($db, $_GET['event_id']));
 		header('Location: event_page.php?event_id='.$_GET['event_id']);
 		exit;
 	}
-	function post_message($db, $message_content) {
-		
+	function post_message($db, $message_content, $disc_id) {
+		$message_content = htmlspecialchars($message_content);
+		pg_prepare($db, "db_post_message", "INSERT INTO Message(Message_Content,Sending_Date,Sending_Time,Username_Transmitter,Discussion_ID) VALUES ($1, $2, $3, $4, $5)");
+		$result = pg_execute($db, "db_post_message", array($message_content, date("Y-m-d"), date("H:i"), $_SESSION["username"], $disc_id));
+		pg_free_result($result);
 	}
 	function get_theme($db,$theme_ID){
 		$result = pg_query($db,"SELECT theme_title FROM theme WHERE theme_ID = ".$theme_ID);

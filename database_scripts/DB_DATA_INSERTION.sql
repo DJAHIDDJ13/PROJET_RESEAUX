@@ -16,9 +16,9 @@ VALUES
 
 
 -- Table : Users
-INSERT INTO 
+INSERT INTO
 Users	(Username   ,Email                 ,Last_Name,First_name,Description               ,Birthday_User,Phone_Number,Place_of_Birth,connected,confirmed,User_Picture,Confirmation_Date,Signup_Date ,Modification_Date,Deletion_Date)
-VALUES 
+VALUES
 		('adam123'  ,'Adam123@gmail.com'   ,'west'   ,'adam'    ,null                      ,'1989/01/10' ,'0675475644','Pontoise'    ,true     ,true     ,null        ,'2018/10/16'     ,'2018/10/16','2018/10/16'     ,null         ),
 		('betty98'  ,'Betty98@hotmail.com' ,'crocker','betty'   ,'I like Traveling'        ,'1995/04/25' ,null        ,'Cergy'       ,true     ,true     ,null        ,'2018/10/19'     ,'2018/10/19','2018/10/19'     ,null         ),
 		('carol666' ,'Carol666@hotmail.com','smith'  ,'carol'   ,null                      ,'1998/09/15' ,'0998405185','Versailles'  ,true     ,true     ,null        ,'2018/10/26'     ,'2018/10/24','2018/10/27'     ,null         ),
