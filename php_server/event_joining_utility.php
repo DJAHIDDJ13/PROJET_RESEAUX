@@ -1,4 +1,5 @@
 <?php
+
 	function get_join_button($db, $event_id) {
 		$status = get_participation_status($db, $event_id);
 		$dis = ($status < 0)?" disabled": "";

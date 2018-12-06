@@ -122,7 +122,7 @@
 </header>
 <div class="divadmin">
 		<div class="image1"></div>
-		<div  class="image2"></div>
+		<div  class="image2" style="background-image: url(img/<?php echo get_image($db, $_SESSION['username'], 0);?>);"></div>
 		<label>Bonjour <?php echo $_SESSION['username'] ?></label>
 </div>
 		<form action="" method="post">

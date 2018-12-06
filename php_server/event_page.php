@@ -98,7 +98,7 @@
 		</header>
 		<div class="divadmin">
 				<div class="image1"></div>
-				<div class="image2" src="img/<?php echo ($event_info['event_picture'])?"users/".$event_info['event_picture']:"default.jpeg";?>"></div>
+				<div  class="image2" style="background-image: url(img/<?php echo get_image($db, $_SESSION['username'], 0);?>);"></div>
 				<div style="margin-top: 1cm; right: 3cm;">
 				<label style="font-size: 14pt; font-family: arial; padding-left: 2.9cm;">Bonjour <?php echo $_SESSION['username'] ?></label>
 			</div>

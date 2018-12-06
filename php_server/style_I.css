@@ -18,6 +18,7 @@
   margin-right: auto;
   margin-left: auto;
   text-align: center;
+
 }
 
 .inscription button {
@@ -178,4 +179,88 @@
   margin-top: 5px;
   width : 300px;
   color: red;
+}
+
+
+.searchform{
+  margin-top :20px;
+  color: #2dc997;
+  background-color: white;
+  width: 850px;
+  height: auto;
+  margin-left: 11cm;
+  border-radius: 8px; 
+}
+
+.searchform h2{
+
+  padding-top :20px;
+  margin-left :10px;
+  text-align : center;
+  font-style: italic ;
+  color: #2dc997;
+
+}
+
+.searchform label{
+  color: black;
+  margin-left :20px;
+  width : 400px;
+}
+
+.searchform input{
+  width: 170px;
+  height: 30px;
+  border-radius: 3px; 
+  border:"solid 2px black" ;
+  border-width: 1px;
+  margin-left: 20px;
+  background-color: #F2F2F2 ;
+}
+.searchform button{
+  margin-top: 1.5cm;
+  background-color:#2dc997;
+  width: 450px;
+  height: 40px;
+  border-style: none;
+  border-radius: 3px;
+  text-transform: uppercase;
+  color: white;
+  font-size: 13pt;
+}
+
+.searchform textarea{
+  width: 140px;
+  height: 30px;
+  border-radius: 3px; 
+  border: solid;
+  border-width: 1px;
+  margin-left: 20px;
+  resize: none;
+}
+
+.searchform select{
+  width: 170px;
+  height: 30px;
+  border-radius: 3px; 
+  border:"solid 2px black" ;
+  border-width: 1px;
+  margin-left: 20px;
+  background-color: #F2F2F2 ;
+}
+
+
+.searchform button{
+
+    margin-bottom: 20px;
+    margin-left: 280px;
+    background-color: #2dc997;
+    width: 250px;
+    height: 40px;
+    border-style: none;
+    border-radius: 3px;
+    text-transform: uppercase;
+    color: white;
+    font-size: 13pt;
+
 }

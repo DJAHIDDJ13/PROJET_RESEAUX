@@ -51,11 +51,6 @@
 			}
 		}
 
-		//~ if( check_date($db, $_SESSION['username'] ,$date) ==  false){
-			//~ $valid = false ;
-			//~ $error_date_e =" Vous avez déja proposer un évenement a cette date ";
-		//~ }
-
 		
 		if($theme == 0){
 			$valid = false ;
@@ -121,7 +116,7 @@
 </header>
 <div class="divadmin">
 		<div class="image1"></div>
-		<div  class="image2"></div>
+		<div  class="image2" style="background-image: url(img/<?php echo get_image($db, $_SESSION['username'], 0);?>);"></div>
 		<div  style="margin-top: 1cm; right: 3cm; ">
 			<label style="font-size: 14pt; font-family: arial; padding-left: 2.9cm;">Bonjour <?php echo $_SESSION['username'] ?></label>
 		</div>

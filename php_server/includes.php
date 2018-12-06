@@ -3,7 +3,25 @@
 	$db = connexion_DB();
 	session_start();
 
-
+	function get_image($db, $username, $event) {
+		if($event != 0) {
+			$result = pg_query($db, "SELECT event_picture FROM Events WHERE event_id=".$event);
+			$result_data = pg_fetch_assoc($result);
+			pg_free_result($result);
+			if($result_data)
+				if($result_data['event_picture'])
+					return 'events/'.$result_data['event_picture'];
+			return 'friends.jpeg';
+		} else if($username){
+			$result = pg_query($db, "SELECT user_picture FROM Users WHERE Username='".$username."'");
+			$result_data = pg_fetch_assoc($result);
+			pg_free_result($result);
+			if($result_data)
+				if($result_data['user_picture'])
+					return 'users/'.$result_data['user_picture'];
+			return 'default.jpeg';
+		}
+	}
 	function get_user_Information($db , $username){
 
 		pg_prepare($db, "db_infos", "SELECT * from users WHERE (Username=$1) ");
