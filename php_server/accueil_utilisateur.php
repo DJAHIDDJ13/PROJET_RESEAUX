@@ -63,9 +63,11 @@
 	<body>
 		<header class="header1">
 				<ul style="margin-top: 0;">
-					<li><a href="accueil_utilisateur.php"><i class="fa fa-home fa-fw" aria-hidden="true"></i>&nbsp;accueil</a></li>
+					<li><a href="accueil_utilisateur.php"><i class="fa fa-home fa-fw" aria-hidden="true"></i>&nbsp;Accueil</a></li>
+					<li><a href="user_profile.php" title="Profile"><i class="fas fa-user f007" aria-hidden="true"></i>&nbsp;<?php echo $_SESSION['username'] ?></a></li>
+					<li><a href="Invitations.php" title="Invitations"><i class="fas fa-user-friends f500" aria-hidden="true"></i></a></li>
 					<li><a href="event_search.php"><i class="fas fa-search f002" aria-hidden="true"></i>&nbsp;Chercher une sortie</a></li>
-					<li><a href="user_propose.php"><i class="fas fa-users f0c0" aria-hidden="true"></i>&nbsp;Proposer une sortie</a></li>
+					<li><a href="user_propose.php"><i class="fas fa-edit f044" aria-hidden="true"></i>&nbsp;Proposer une sortie</a></li>
 					<li><a href="deconnexion.php"><i class="fas fa-sign-out-alt f2f5 "aria-hidden="true"></i>&nbsp;Se Déconnecter</a></li>
 				</ul>
 		</header>

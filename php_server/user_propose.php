@@ -80,9 +80,9 @@
 			$inser_d = pg_execute($db, "db_insert_discussion", array($now));
 			$id = pg_fetch_assoc($inser_d);
 			$id_d = $id['discussion_id'];
-			pg_prepare($db,"db_insert_event", "INSERT INTO events (event_time,event_date, event_address,event_city,event_title,description,Capacity,event_picture,deadline_date,proposition_date,modification_date,theme_id,guest_id,username_organizer,discussion_id)
-			VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)");
-			$inser_event = pg_execute($db, "db_insert_event", array($time,$date,$adresse,$city,$title,$description,$capacity,$image,$deadline,$now,$now,$theme,$guest,$_SESSION['username'],$id_d));
+			pg_prepare($db,"db_insert_event", "INSERT INTO events (event_time,event_date, event_address,event_city,event_title,description,Capacity,event_picture,deadline_date,proposition_date,modification_date,theme_id,guest_id,username_organizer,discussion_id,confirmed)
+			VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16)");
+			$inser_event = pg_execute($db, "db_insert_event", array($time,$date,$adresse,$city,$title,$description,$capacity,$image,$deadline,$now,$now,$theme,$guest,$_SESSION['username'],$id_d,'false'));
 			
 			$_SESSION['flash'] ="Votre Proposition a été enregistré avec succée";
 
@@ -100,7 +100,7 @@
 <html lang="fr">
 	<head>
 		<link rel="stylesheet" type="text/css" href="./style1.css">
-		<link rel="stylesheet" type="text/css" href="./style_I.css">
+		<link rel="stylesheet" type="text/css" href="./proposition_style.css">
 		<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 		<title>Proposer Sortie</title>

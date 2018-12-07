@@ -1,0 +1,108 @@
+html
+{
+  background:
+   linear-gradient(
+      rgba(0, 0, 0, 0.5), 
+      rgba(0, 0, 0, 0.5)
+    ), url(img/friends2.jpg);
+  background-attachment: fixed;
+  background-size: cover;
+  background-repeat: no-repeat;
+  margin: 0;
+  padding:0;
+ -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  position: relative;
+  
+}
+
+.input_I{
+  margin-bottom : 20px;
+  width : 350px;
+  height: 30px;
+}
+
+.inscription{
+
+  height: auto ;
+  width: 700px;
+  background-color: white;
+  margin-top: 30px;
+  font-family: sans-serif;
+  position: center;
+  border-radius: 5px;
+  margin-right: auto;
+  margin-left: auto;
+  text-align: center;
+}
+
+.inscription button {
+  margin-bottom : 10px;
+  margin-top :5px;
+}
+
+.inscription p {
+  padding-top: 10px;
+  color: #2dc997;
+  font-weight: lighter;
+  font-size: 30px;
+  text-align: center;
+}
+
+
+.inscription label{
+  color: black;
+  margin-left :10px;
+  width : 350px;
+  margin-top: -5px;
+}
+
+.label_I{
+  color: darkslategrey;
+  margin-left :10px;
+  width : 350px;
+}
+
+
+
+.inscription input{
+  width: 300px;
+  height: 30px;
+  border-radius: 3px; 
+  border: solid;
+  border-width: 1px;
+  margin-left: 10px;
+  background-color: #F2F2F2;
+}
+
+.inscription small{
+  font-size :10px;
+  font-style :italic;
+  margin-left: 10px;
+  margin-top: 5px;
+  width : 300px;
+  color: red;
+}
+
+.inscription button{
+  margin-top: 20px;
+  background-color:#2dc997;
+  width: 450px;
+  height: 40px;
+  border-style: none;
+  border-radius: 3px;
+  text-transform: uppercase;
+  color: white;
+  font-size: 13pt;
+}
+.inscription textarea{
+  width:300px;
+  height: 30px;
+  border-radius: 3px; 
+  border: solid;
+  border-width: 1px;
+  margin-left: 10px;
+  background-color: #F2F2F2;
+}
+

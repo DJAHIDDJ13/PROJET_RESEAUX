@@ -19,7 +19,7 @@ function is_banned($db, $username) {
 	pg_free_result($result);
 	if(!$result_data)
 		return false;
-	return $result_data['deletion_date'] != '';
+	return $result_data['deletion_date'] != '' || $result_data['confirmed'] == 'f';
 }
 if(!empty($_POST)) {
 	extract($_POST);

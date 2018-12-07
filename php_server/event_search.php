@@ -10,7 +10,11 @@
 		header('Location: accueil_admin.php');
 		exit;
 	}
-
+	if(isset($_POST['event_id'])) {
+		join_event($db, $_POST['event_id']);
+		header('Location: event_search.php');
+		exit;
+	}
 	function get_theme($db,$theme_ID){
 		$result = pg_query($db,"SELECT theme_title FROM theme WHERE theme_ID = ".$theme_ID);
 		$result = pg_fetch_assoc($result);
@@ -64,7 +68,7 @@
 <html>
 	<head>
 		<link rel="stylesheet" type="text/css" href="./style1.css">
-		<link rel="stylesheet" type="text/css" href="./style_I.css">
+		<link rel="stylesheet" type="text/css" href="./proposition_style.css">
 		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 		<title>Recherche Sorties</title>
 	</head>

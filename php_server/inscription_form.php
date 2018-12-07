@@ -80,8 +80,7 @@
 <html lang="fr">
 <head>
 	<meta charset="utf-8" />
-	<link rel="Stylesheet" href="./style.css" type="text/css" />
-	<link rel="Stylesheet" href="./style_I.css" type="text/css" />
+	<link rel="Stylesheet" href="./Inscription_style.css" type="text/css" />
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 	<title>Inscription</title>
 </head>
@@ -185,7 +184,7 @@
 							<label class="label_I">Téléphone :</label>
 							</div>
 				       		<div class="input_I">
-			                    <input  type="text" name="phone" placeholder="Télephone : 06 XX XX XX XX " value="<?php if (isset($_POST['phone'])) echo $phone; ?>" />
+			                    <input  type="text" name="phone" placeholder="Télephone : 06XXXXXXXX " value="<?php if (isset($_POST['phone'])) echo $phone; ?>" />
 			                    <div><small><?php if (isset($error_phone)) echo $error_phone; ?></small></div>
 			                </div>
 						</td>
@@ -205,16 +204,19 @@
 							<label>Décrivez-vous en quelque lignes :</label>
 							</div>
 				       		<div class="input_I">
-			                    <textarea rows ="4" name="description" placeholder="Description"  >
-			                	</textarea>
+			                    <textarea rows ="4" name="description" placeholder="Description"  ></textarea>
 			                </div>
 						</td>
 						<td>
 						</td>
 					</tr>
 				</table>
-				<button type="submit" name="register" accept="image/*" > S'inscrire </button>
+				<div>
+					<button type="submit" name="register" accept="image/*" > S'inscrire </button>
+				</div>
+				<a href='connexion_form.php'>Vous avez déja un compte ? Connectez vous !!</a>
 			</form>
+
 			<footer>
 			</footer>
 	</body>

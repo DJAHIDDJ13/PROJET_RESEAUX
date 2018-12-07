@@ -56,13 +56,4 @@
 			return 1;
 		}
 	}
-	function is_friend_with($db, $username) {
-		$result = pg_query($db, "SELECT * FROM Invitation WHERE ((Username_Sender='".$_SESSION['username']."' AND Username_Receiver='".$username."') OR (Username_Sender='".$username."' AND Username_Receiver='".$_SESSION['username']."')) AND Acceptance_Time IS NOT NULL AND Acceptance_Date IS NOT NULL");
-		$result_data = pg_fetch_assoc($result);
-		pg_free_result($result);
-		if($result_data) {
-			return true;
-		}
-		return false;
-	}
 ?>
