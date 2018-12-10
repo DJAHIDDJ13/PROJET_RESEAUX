@@ -22,7 +22,7 @@
 				$result = pg_execute($db, "db_user_join_update", array(date("Y-m-d"), $event_id, $_SESSION['username']));
 				pg_free_result($result);				
 			}
-		} else if($stat == 0){ // case where unsubscribing
+		} else if($stat == 0) { // case where unsubscribing
 			pg_prepare($db, "db_user_unjoin", "UPDATE Participate SET unsubscription_date=$1 WHERE Event_ID=$2 AND Username_Participant=$3");
 			$result = pg_execute($db, "db_user_unjoin", array(date("Y-m-d"), $event_id, $_SESSION['username']));
 			pg_free_result($result);

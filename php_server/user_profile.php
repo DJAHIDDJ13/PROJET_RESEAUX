@@ -10,30 +10,8 @@
 		header('Location: accueil_admin.php');
 		exit;
 	}
-	if(isset($_POST['add_friend'])) {
-		add_friend($db, $_GET['username']);
-		header('Location: user_profile.php?username='.$_GET['username']);
-		exit;
-	}
 
-	function add_friend($db, $username) {
-		if(is_friend_with($db, $username))
-			return;
-		$result = pg_query($db, "INSERT INTO Invitation(Invitation_Date,Acceptance_Date,acceptance_time,username_receiver,username_sender) VALUES ('".Date("Y-m-d")."', '".Date("Y-m-d")."', '".Date("H:i")."', '".$username."', '".$_SESSION["username"]."')");
-		pg_free_result($result);
-	}
-	function get_add_form($db, $username) {
-		if($_SESSION["username"] == $username )
-			return '';
-		if(is_friend_with($db, $username))
-			return '<p>Deja amis!</p>';
 
-		return 
-		"<form action='' method='post' name='add'>
-			<input type='submit' name='add' value='Ajouter ami'></input>
-			<input type='hidden' name='add_friend' values='in'>
-		</form>";
-	}
 	 function get_users_profile($db, $username){
    		$result =  pg_query($db, "SELECT * FROM users WHERE username = '".$username."'");
    		$result = pg_fetch_assoc($result);
@@ -55,10 +33,7 @@
    				<div>
    					<label> <b style="color:#2dc997;">Date d\'inscription : </b>'.$result['signup_date'].'</label>
    					<label style="padding-left:2cm;"> <b style="color:#2dc997;">Date de confirmation: </b>'.$result['confirmation_date'].'</label>
-   				</div>
-   				<div>'
-						.get_add_form($db, $username).
-   				'</div>';
+   				</div>';
    				
    		return $res;
    	}

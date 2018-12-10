@@ -30,7 +30,7 @@
 	function search_events($db,$title,$start_date,$end_date,$organizer,$theme) {
 		$title = trim($title);
 		$organizer = trim($organizer);
-		pg_prepare($db, "db_event_search", "SELECT username_organizer ,theme_id ,event_title, event_city ,event_id FROM events Where (STRPOS(event_title, $1)>0 OR $1='') AND (event_date>=$2 OR $2 IS NULL) AND (event_Date<=$3 OR $3 IS NULL) AND (STRPOS(username_organizer, $4)>0 OR $4='') AND (theme_id>=$5 OR $5 IS NULL)AND confirmed = true ");
+		pg_prepare($db, "db_event_search", "SELECT username_organizer ,theme_id ,event_title, event_city ,event_id FROM events Where (STRPOS(event_title, $1)>0 OR $1='') AND (event_date>=$2 OR $2 IS NULL) AND (event_Date<=$3 OR $3 IS NULL) AND (STRPOS(username_organizer, $4)>0 OR $4='') AND (theme_id>=$5 OR $5 IS NULL) AND confirmed = true ");
 		$start_date = ($start_date=='')?null:$start_date;
 		$end_date = ($end_date=='')?null:$end_date;
 		$result = pg_execute($db, "db_event_search", array($title,$start_date,$end_date,$organizer,intval($theme)));

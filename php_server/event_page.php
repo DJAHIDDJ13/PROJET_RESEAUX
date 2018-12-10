@@ -42,22 +42,38 @@
 		pg_free_result($result);
 		return $result_data['theme_title'];
 	}
-	function get_message_div($db, $message_id) {
+	function get_seen($db, $message_id, $disc_id) {
+		$result = pg_query($db, "SELECT * FROM (SELECT Username_Receiver, max(message_id) AS message_id FROM (Receive NATURAL JOIN Message) WHERE Discussion_ID=".$disc_id." GROUP BY Username_receiver) AS _ WHERE message_ID=".$message_id);
+		$result_data = 'vu par: ';
+		while($res = pg_fetch_assoc($result)) 
+			$result_data .= $res['username_receiver']." ";
+		pg_free_result($result);
+		return ($result_data == 'vu par: ')? '': $result_data;
+	}
+	function mark_as_read($db, $message_id) {
+		$result = pg_query($db , "SELECT * FROM Receive WHERE message_id=".$message_id." AND username_receiver='".$_SESSION['username']."'");
+		$result_data = pg_fetch_assoc($result);
+		if(!$result_data) 
+			pg_free_result(pg_query($db, "INSERT INTO Receive(message_id,username_receiver,seen_time,seen_date) VALUES (".$message_id.", '".$_SESSION['username']."', '".date("H:i")."', '".date("Y-m-d")."')"));
+		
+	}
+	function get_message_div($db, $message_id, $disc_id) {
 		$result = pg_query($db,"SELECT * FROM Message WHERE Message_id = ".$message_id);
 		$result_data = pg_fetch_assoc($result);
 		pg_free_result($result);
 		$to_ret = '';
+		mark_as_read($db, $message_id);
 		if($result_data['username_transmitter'] == $_SESSION['username']) {
 			$to_ret .= '<div class="my_message">
 							<b class="right">'.$result_data['username_transmitter'].'</b>
 							<p class="right">'.$result_data['message_content'].'</p>
-							<span class="time-right">'.$result_data['sending_time'].' '.$result_data['sending_date'].'</p>
+							<span class="time-right">'.$result_data['sending_time'].' '.$result_data['sending_date'].'<br>'.get_seen($db, $message_id, $disc_id).'</span>
 						</div>';
 		} else {
 			$to_ret .= '<div class="other_message">
 							<b class="left">'.$result_data['username_transmitter'].'</b>
-							<p class="right">'.$result_data['message_content'].'</p>
-							<span class="time-left">'.$result_data['sending_time'].' '.$result_data['sending_date'].'</p>
+							<p class="left">'.$result_data['message_content'].'</p>
+							<span class="time-left">'.$result_data['sending_time'].' '.$result_data['sending_date'].'<br>'.get_seen($db, $message_id, $disc_id).'</span>
 						</div>';	
 		}
 		return $to_ret;
@@ -73,7 +89,7 @@
 		$result = pg_query($db,"SELECT * FROM Message WHERE Discussion_ID=".$disc_id);
 		$to_ret = '';
 		while($result_data = pg_fetch_assoc($result)) {
-			$to_ret .= get_message_div($db, $result_data['message_id']);
+			$to_ret .= get_message_div($db, $result_data['message_id'], $disc_id);
 		}
 		return $to_ret;
 	}

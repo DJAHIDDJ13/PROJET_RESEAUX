@@ -44,7 +44,7 @@
 				echo '<td class="user_table_cell">'. $row['first_name'].'</td>';
 				echo '<td class="user_table_cell">'. $row['last_name'].'</td>';
 				echo '<td class="user_table_cell">'. $row['place_of_birth'].'</td>';
-				echo '<td class="user_table_cell">'. $row['username'].'</td>';
+				echo '<td class="user_table_cell">'. $row['signup_date'].'</td>';
 				echo '<td class="user_table_cell" style="padding-left:1.25cm;">';
 					echo '<form action=" " method="post"  style="background-color:green; width:48px;">';
 						echo '<input  name="username" value="'.$row['username'].'" type="hidden">';

@@ -118,7 +118,7 @@ Participate     (username_participant,event_id,subscription_date,unsubscription_
 -- Table : Message 
 
 INSERT INTO 
-Message 	(Message_Content			     ,Sending_Date,Sending_Time,Username_Transmitter,Discussion_ID)
+Message (Message_Content			     		  ,Sending_Date,Sending_Time,Username_Transmitter,Discussion_ID)
 
 VALUES 
 		('Bienvenue a cette sortie'               ,'2018/10/17','15:03'     ,'adam123'           ,1            ),

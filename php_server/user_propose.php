@@ -1,6 +1,7 @@
 <?php
    
    	include_once('includes.php');
+   	include_once('event_joining_utility.php');
    	$now = date("Y-m-d");
    	$time = date("H:i:s");
 
@@ -83,14 +84,11 @@
 			pg_prepare($db,"db_insert_event", "INSERT INTO events (event_time,event_date, event_address,event_city,event_title,description,Capacity,event_picture,deadline_date,proposition_date,modification_date,theme_id,guest_id,username_organizer,discussion_id,confirmed)
 			VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16)");
 			$inser_event = pg_execute($db, "db_insert_event", array($time,$date,$adresse,$city,$title,$description,$capacity,$image,$deadline,$now,$now,$theme,$guest,$_SESSION['username'],$id_d,'false'));
-			
+			$res = pg_query($db, "SELECT event_id FROM Events ORDER BY event_id DESC LIMIT 1");
+			$d = pg_fetch_assoc($res);
+			pg_free_result(pg_query($db, "INSERT INTO Participate VALUES ('".$_SESSION['username']."', ".$d['event_id'].", '".date('Y-m-d')."', NULL)"));
 			$_SESSION['flash'] ="Votre Proposition a été enregistré avec succée";
-
-			
-
 		}
-
-
 	}
 
 
