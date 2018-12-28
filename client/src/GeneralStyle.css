@@ -1,5 +1,8 @@
 .root {
-    -fx-background-color: #383838;
+    -fx-background-color: #684A52;
+}
+.welcome {
+    -fx-background-color: #395C6B;
 }
 
 .root > Label {
@@ -7,11 +10,11 @@
 }
 
 Hyperlink {
-    -fx-text-fill: #0202F0;
+    -fx-text-fill: #D4CB92;
 }
 
-.root > AnchorPane {
-    -fx-background-color: #ec3939;
+.connexion {
+    -fx-background-color: #80A4ED;
 }
 
 Button {
