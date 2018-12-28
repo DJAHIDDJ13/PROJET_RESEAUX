@@ -16,9 +16,9 @@ VALUES
 
 
 -- Table : Users
-INSERT INTO 
-Users		(Username   ,Email                 ,Last_Name,First_name,Description               ,Birthday_User,Phone_Number,Place_of_Birth,connected,confirmed,User_Picture,Confirmation_Date,Signup_Date ,Modification_Date,Deletion_Date)
-VALUES 
+INSERT INTO
+Users	(Username   ,Email                 ,Last_Name,First_name,Description               ,Birthday_User,Phone_Number,Place_of_Birth,connected,confirmed,User_Picture,Confirmation_Date,Signup_Date ,Modification_Date,Deletion_Date)
+VALUES
 		('adam123'  ,'Adam123@gmail.com'   ,'west'   ,'adam'    ,null                      ,'1989/01/10' ,'0675475644','Pontoise'    ,true     ,true     ,null        ,'2018/10/16'     ,'2018/10/16','2018/10/16'     ,null         ),
 		('betty98'  ,'Betty98@hotmail.com' ,'crocker','betty'   ,'I like Traveling'        ,'1995/04/25' ,null        ,'Cergy'       ,true     ,true     ,null        ,'2018/10/19'     ,'2018/10/19','2018/10/19'     ,null         ),
 		('carol666' ,'Carol666@hotmail.com','smith'  ,'carol'   ,null                      ,'1998/09/15' ,'0998405185','Versailles'  ,true     ,true     ,null        ,'2018/10/26'     ,'2018/10/24','2018/10/27'     ,null         ),
@@ -33,7 +33,7 @@ VALUES
 		('2018/10/20'   ,'2018/10/20'   ,'12:54'        ,'betty98'        ,'adam123'      ),
 		('2018/10/24'   ,'2018/10/25'   ,'14:25'        ,'carol666'       ,'adam123'      ),
 		('2018/10/16'   ,'2018/10/20'   ,'9:25'         ,'raphael42'      ,'adam123'      ),
-		('2018/10/19'   ,'2018/10/20'   ,'5:14'         ,'betty98'        ,'betty98'      ),
+		('2018/10/19'   ,'2018/10/20'   ,'5:14'         ,'betty98'        ,'raphael42'      ),
 		('2018/10/24'   ,null           ,null           ,'2018omar'       ,'carol666'     ),
 		('2018/10/26'   ,'2018/10/26'   ,'15:51'        ,'chris2999'      ,'carol666'     ),
 		('2018/10/26'   ,'2018/10/26'   ,'16:16'        ,'betty98'        ,'carol666'     ),
@@ -73,13 +73,13 @@ VALUES
 -- Table : Event 
 
 INSERT INTO 
-Events  	   (event_time,event_date  ,event_address                             ,event_city ,event_title   ,description                                                             ,capacity,event_picture,proposition_date,confirmation_date,modification_date,deletion_date,confirmed        ,theme_id,deadline_date,guest_id,username_organizer,discussion_id)
+Events     (event_time,event_date  ,event_address                             ,event_city ,event_title   ,description                                                             ,capacity,event_picture,proposition_date,confirmation_date,modification_date,deletion_date,confirmed        ,theme_id,deadline_date,guest_id,username_organizer,discussion_id)
 
 VALUES 
-		   ('18:00'   ,'2018/12/02','1 carrefour de Longchamp-75016 Paris'    ,'Paris'    ,'Human'       ,'Exposition audiovisuel sur les effets de l''etre humain sur la planète',1000    ,null         ,'2018/10/17'    ,null             ,'2018/10/17'     ,null         ,false            ,2       ,'2018/12/01' ,1       ,'adam123'         ,1 	     ),
-		   ('14:30'   ,'2018/12/12','Accorhotels arena 8 bd de bercy paris 12','Paris'    ,'Indochine 13','Concert de l''artiste Indochine dans son 13 eme tour'                  ,10000   ,null         ,'2018/10/17'    ,null             ,'2018/10/17'     ,null         ,false            ,1       ,'2018/12/11' ,1       ,'adam123'         ,2   	     ),
-		   ('23:59'   ,'2999/12/31','A'                                       ,'Barcelone','A'           ,null                                                                    ,99999   ,null         ,'2018/10/24'    ,null             ,'2018/10/25'     ,'2018/10/25' ,false            ,4       ,'2018/12/31' ,1       ,'2018omar'        ,4	     ),
-		   ('08:00'   ,'2018/11/16','Île de loisirs de Cergy-Pontoise'        ,'Cergy'    ,'Sortie Parc' ,'On va sortir vers le parc des loisirs'                                 ,200     ,null         ,'2018/10/27'    ,'2018/10/27'     ,'2018/10/30'     ,null         ,true             ,5       ,'2018/11/16' ,2       ,'betty98'         ,3  	     );
+		   ('18:00'   ,'2019/02/02','1 carrefour de Longchamp-75016 Paris'    ,'Paris'    ,'Human'       ,'Exposition audiovisuel sur les effets de l''etre humain sur la planète',1000    ,null         ,'2018/10/17'    ,'2018/10/17'     ,'2018/10/17'     ,null         ,true            ,2       ,'2019/2/01' ,1       ,'adam123'         ,1 	   ),
+		   ('14:30'   ,'2019/02/12','Accorhotels arena 8 bd de bercy paris 12','Paris'    ,'Indochine 13','Concert de l''artiste Indochine dans son 13 eme tour'                  ,10000   ,null         ,'2018/10/17'    ,'2018/10/17'     ,'2018/10/17'     ,null         ,true            ,1       ,'2019/2/11' ,1       ,'adam123'         ,2   	   ),
+		   ('23:59'   ,'2999/12/31','A'                                       ,'Barcelone','A'           ,null                                                                    ,99999   ,null         ,'2018/10/24'    ,'2018/10/24'             ,'2018/10/25'     ,'2018/10/25' ,true            ,4       ,'2018/12/31' ,1       ,'2018omar'        ,4	       ),
+		   ('08:00'   ,'2019/01/16','Île de loisirs de Cergy-Pontoise'        ,'Cergy'    ,'Sortie Parc' ,'On va sortir vers le parc des loisirs'                                 ,200     ,null         ,'2018/10/27'    ,'2018/10/27'     ,'2018/10/30'     ,null         ,true             ,5       ,'2019/2/16' ,2       ,'betty98'         ,3  	           );
 
 -- Table : Notification 
 
@@ -118,7 +118,7 @@ Participate     (username_participant,event_id,subscription_date,unsubscription_
 -- Table : Message 
 
 INSERT INTO 
-Message 	(Message_Content			     ,Sending_Date,Sending_Time,Username_Transmitter,Discussion_ID)
+Message (Message_Content			     		  ,Sending_Date,Sending_Time,Username_Transmitter,Discussion_ID)
 
 VALUES 
 		('Bienvenue a cette sortie'               ,'2018/10/17','15:03'     ,'adam123'           ,1            ),
@@ -135,7 +135,7 @@ VALUES
 -- Table : Receive 
 
 INSERT INTO 
-Receive 	(message_id,username_receiver,seen_time,seen_date   )
+Receive (message_id,username_receiver,seen_time,seen_date   )
 VALUES 
 		(1	   ,'adam123'  	     ,'15:03'  ,'2018/10/17'),
 		(1	   ,'carol666' 	     ,'15:09'  ,'2018/10/17'),
@@ -144,15 +144,12 @@ VALUES
 		(2	   ,'carol666' 	     ,'15:10'  ,'2018/10/17'),
 		(2	   ,'raphael42'	     ,'16:00'  ,'2018/10/17'),
 		(3	   ,'adam123'  	     ,'15:00'  ,'2018/10/17'),
-		(3	   ,'betty98' 	     ,null     ,null        ),
 		(3	   ,'raphael42'	     ,'16:00'  ,'2018/10/17'),
 		(3	   ,'chris2999'	     ,'09:59'  ,'2018/10/18'),
 		(4	   ,'adam123'  	     ,'16:02'  ,'2018/10/17'),
-		(4	   ,'betty98'  	     ,null     ,null        ),
 		(4	   ,'raphael42'	     ,'16:01'  ,'2018/10/17'),
 		(4	   ,'chris2999'	     ,'09:59'  ,'2018/10/18'),
 		(5	   ,'adam123'  	     ,'12:00'  ,'2018/10/18'),
-		(5	   ,'betty98'  	     ,null     ,null        ),
 		(5	   ,'raphael42'	     ,'13:55'  ,'2018/10/18'),
 		(5	   ,'chris2999'	     ,'09:59'  ,'2018/10/18'),
 		(6	   ,'adam123'  	     ,'13:58'  ,'2018/10/27'),

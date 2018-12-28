@@ -1,0 +1,82 @@
+.chat_container {
+	width: 60%;
+	height: 400px;
+	border: 2px solid black;
+	background: white;
+	margin-top: 30px;
+	margin-left: auto;
+}
+
+.chat_container > .chat_header {
+	width: 95%;
+	background: #999;
+	padding: 15px;
+	border-bottom: 1px solid black;
+}
+
+.chat_container > .chat_header h3 {
+	margin: 0;
+	padding: 0;
+	font-weight: 300;
+	color: #333;
+	text-align: center;
+}
+
+.chat_container > .chat_messages {
+	height: 70%;
+	border-bottom: 1px solid #ddd;
+	overflow-y: scroll;
+}
+.chat_container > .chat_bottom form input[type="submit"] {
+	padding: 6px;
+	background: white;
+	border: 1px solid #ddd;
+	cursor: pointer;
+}
+
+.chat_container > .chat_bottom form input[type="text"] {
+	width: 85%;
+	padding: 3px;
+	padding-left: 10px;
+	border: 1px solid #ddd;
+	border-radius: 5px;
+	margin: 5px;
+}
+
+.other_message {
+    border: 2px solid #dedede;
+    background-color: #f1f1f1;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+.my_message {
+    border: 2px solid #dedede;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px 0;
+    border-color: #ccc;
+    background-color: #ddd;
+}
+
+.my_message::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+.other_message::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+.time-right {
+    float: right;
+    color: #aaa;
+}
+
+
+.time-left {
+    float: left;
+    color: #999;
+}

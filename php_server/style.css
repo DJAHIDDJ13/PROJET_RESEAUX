@@ -1,0 +1,61 @@
+html
+{
+  background:
+   linear-gradient(
+      rgba(0, 0, 0, 0.5), 
+      rgba(0, 0, 0, 0.5)
+    ), url(img/friends2.jpg);
+  background-attachment: fixed;
+  background-size: cover;
+  background-repeat: no-repeat;
+  margin: 0;
+  padding:0;
+ -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  position: relative;
+  
+}
+form.connexionform{
+  height: 400px ;
+  width: 500px;
+  background-color: white;
+  margin: 2cm 10cm 5cm 11.5cm;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  font-family: sans-serif;
+}
+h2{
+
+	color: dimgrey;
+	font-weight: lighter;
+	font-size: 20pt;
+
+
+  }
+label{
+	margin-right: 10.5cm;
+	color: darkslategrey;
+
+}
+button{
+	margin-top: 1.5cm;
+	background-color:#2dc997;
+	width: 450px;
+	height: 40px;
+	border-style: none;
+	border-radius: 3px;
+	text-transform: uppercase;
+	color: white;
+	font-size: 13pt;
+}
+input{
+	width: 450px;
+	height: 30px;
+	border-radius: 3px; 
+	border-style: solid;
+	border-width: 1px;
+}
