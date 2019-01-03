@@ -34,7 +34,8 @@ void send_message(int sockfd, char* mes) {
 	//~ printf("[%d]Received: %s\n", getpid(), buff);
 	//~ return buff;
 //~ }
-void get_message(int filedesc, char** buff) {
+
+int get_message(int filedesc, char** buff) {
 	fd_set set;
 	struct timeval timeout;
 	int rv;
@@ -42,22 +43,23 @@ void get_message(int filedesc, char** buff) {
 	FD_ZERO(&set); /* clear the set */
 	FD_SET(filedesc, &set); /* add our file descriptor to the set */
 
-	timeout.tv_sec = 8*60*60;
+	timeout.tv_sec = 10;
 	timeout.tv_usec = 0;
 
 	rv = select(filedesc + 1, &set, NULL, NULL, &timeout);
 	if(rv == -1) {
 		printf("[%d]Select\n", getpid()); /* an error accured */
-		exit(-1);
+		return -1;
 	}
 	else if(rv == 0) {
 		send_message(filedesc, "TIMEOUT_EXIT\n");
-		printf("[%d]Timeout exiting..\n", getpid()); /* a timeout occured */
-		exit(-1);
+		printf("[%d]Timeout\n", getpid()); /* a timeout occured */
+		return -1;
 	}
 	else
 		read( filedesc, *buff, MAX ); /* there was data to read */
  	printf("[%d]Received: %s\n", getpid(), *buff);
+ 	return 0;
 }
 
 int is_valid_login(char* login, char* pass) {
@@ -85,43 +87,60 @@ char *cut(char *mes) {
 	return mes;
 }
 
-int authentication_protocol(int sockfd) {
+int authentication_protocol(int sockfd, char **username) {
 	char *buff = malloc(sizeof(char) * MAX);
 	send_message(sockfd, "ACK_AUTH\n");
+	
+	if(get_message(sockfd, &buff) < 0)
+		return -1;
+
 	char *pass  = split(buff);
 	char *login = cut(buff);
-	get_message(sockfd, &buff);
+	strcpy(*username, login);
 	
 	if(is_valid_login(login, pass)) {
 		send_message(sockfd, "AUTH_ACCEPT\n");
-		get_message(sockfd, &buff);
-		if(strstr(buff, "ACK_ACCEPT"))
-			return 0;
+		if(get_message(sockfd, &buff) < 0)
+			return -1;
+		if(strstr(buff, "ACK_ACCEPT")) {
+			return 1;
+		}
 	} else {
 		send_message(sockfd, "AUTH_REFUSE\n");
-		get_message(sockfd, &buff);
-		if(strstr(buff, "ACK_REFUSE"))
+		if(get_message(sockfd, &buff) < 0)
 			return -1;
+		if(strstr(buff, "ACK_REFUSE"))
+			return 0;
 	}
     free(buff);
 	return 0;
 }
 
+void get_recent_events_protocol() {
+	int n;
+}
+
 // Function designed for chat between client and server. 
 void func(int sockfd) {
+	int authenticated = 0;
+	char* login = malloc(sizeof(char) * 255);
 	char *buff = malloc(sizeof(char) * MAX);
     // infinite loop for chat 
     while(1) {
         // read the message from client and copy it in buffer 
-		get_message(sockfd, &buff);
+		if(get_message(sockfd, &buff) < 0)
+			break;
         if(strstr(buff, "AUTH")) {
-			if(authentication_protocol(sockfd) < 0) {
-				printf("[%d] Authentication failed", getpid());
-				exit(0);
-			}
+			authenticated = authentication_protocol(sockfd, &login);
+			if(authenticated < 0)
+				break;
 		} else if(strstr(buff, "EXIT")) {
 			send_message(sockfd, "ACK_EXIT\n");
 			break;
+		} else if(strstr(buff, "GET_RECENT_EVENTS")) {
+			if(authenticated) {
+				get_recent_events_protocol(sockfd);
+			}
 		} else {
 			send_message(sockfd, "UNKNOWN_COMMAND\n");
 		}
@@ -153,7 +172,7 @@ int main() {
     servaddr.sin_port = htons(PORT); 
   
     // Binding newly created socket to given IP and verification 
-    if ((bind(sockfd, (SA*)&servaddr, sizeof(servaddr))) != 0) { 
+    if ((bind(sockfd, (SA*)&servaddr, sizeof(servaddr))) != 0) {
         printf("socket bind failed...\n"); 
         exit(0); 
     } 
