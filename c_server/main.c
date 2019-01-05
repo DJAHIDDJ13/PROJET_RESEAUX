@@ -52,30 +52,41 @@ void send_message(int sockfd, char* mes) {
 	printf("[%d]Sent: %s\n", getpid(), mes);
 }
 
-int get_message(int filedesc, char** buff) {
+void read_line(int sockfd, char** buff) {
+	char c;
+	int n = 0;
+	do {
+		if(read(sockfd, &c, 1) < 0)
+			printf("[%d]Read error\n", getpid());
+		*buff[n++] = c;
+		printf("%c\n", c);
+	} while(c != '\n' && c != '\r' && c != '\0'&& n < MAX);
+}
+
+int get_message(int sockfd, char** buff) {
 	memset(*buff, 0, sizeof(char) * MAX);
 	fd_set set;
 	struct timeval timeout;
 	int rv;
 
 	FD_ZERO(&set); /* clear the set */
-	FD_SET(filedesc, &set); /* add our file descriptor to the set */
+	FD_SET(sockfd, &set); /* add our file descriptor to the set */
 
 	timeout.tv_sec = 8*60*60;
 	timeout.tv_usec = 0;
 
-	rv = select(filedesc + 1, &set, NULL, NULL, &timeout);
+	rv = select(sockfd + 1, &set, NULL, NULL, &timeout);
 	if(rv == -1) {
 		printf("[%d]Select\n", getpid()); /* an error accured */
 		return -1;
-	}
-	else if(rv == 0) {
-		send_message(filedesc, "TIMEOUT_EXIT\n");
+	} else if(rv == 0) {
+		send_message(sockfd, "TIMEOUT_EXIT\n");
 		printf("[%d]Timeout\n", getpid()); /* a timeout occured */
 		return -1;
+	} else {
+		printf("Reading\n");
+		read_line(sockfd, buff);
 	}
-	else
-		read( filedesc, *buff, MAX ); /* there was data to read */
  	printf("[%d]Received: *%s*\n", getpid(), *buff);
  	return 0;
 }
@@ -253,19 +264,19 @@ void get_search_events_protocol(int sockfd) {
 		}
 	}
 	free(buff);
-
+}
+int db_add_user(USER_T user_info) {
+	return -1;
 }
 void add_user_protocol(int sockfd) {
 	send_message(sockfd, "ACK_ADD_USER\n");
 	
-	char* buff = malloc(sizeof(char) * MAX);
-	get_message(sockfd, &buff);
-	
+	char* buff = malloc(sizeof(char) * MAX);	
 	USER_T user_info;
 	
 	user_info.l_name = malloc(sizeof(char) * MAX);
 	get_message(sockfd, &buff);
-	strcpy(user_info.f_name, buff);
+	strcpy(user_info.l_name, buff);
 
 	user_info.f_name = malloc(sizeof(char) * MAX);
 	get_message(sockfd, &buff);
@@ -302,8 +313,17 @@ void add_user_protocol(int sockfd) {
 	if(db_add_user(user_info) < 0) {
 		send_message(sockfd, "INVALID_USER_INFO\n");
 	} else {
-		send_message(sockfd, "VALID_USER_INFO\n");		
+		send_message(sockfd, "VALID_USER_INFO\n");
 	}
+	free(user_info.l_name);
+	free(user_info.f_name);
+	free(user_info.u_name);
+	free(user_info.pass);
+	free(user_info.email);
+	free(user_info.tel);
+	free(user_info.birth_place);
+	free(user_info.birth_date);
+	free(user_info.description);
 }
 // Function designed for chat between client and server. 
 void func(int sockfd) {
