@@ -9,6 +9,7 @@
 #include <sys/wait.h>
 #include <time.h>
 #include <ctype.h>
+#include <errno.h>
 
 #define MAX 2048 
 #define PORT 8080 
@@ -36,6 +37,7 @@ typedef struct {
 	char* f_name;
 	char* u_name;
 	char* pass;
+	char* city;
 	char* email;
 	char* tel;
 	char* birth_place;
@@ -56,15 +58,58 @@ void read_line(int sockfd, char** buff) {
 	char c;
 	int n = 0;
 	do {
-		if(read(sockfd, &c, 1) < 0)
+		if(read(sockfd, &c, 1) < 0) {
 			printf("[%d]Read error\n", getpid());
+			exit(-1);
+		}
 		*buff[n++] = c;
 		printf("%c\n", c);
-	} while(c != '\n' && c != '\r' && c != '\0'&& n < MAX);
+	} while(c != '\n' && c != '\r' && c != '\0' && n < MAX);
+}
+ssize_t readLine(int fd, void *buffer, size_t n) {
+    ssize_t numRead;                    /* # of bytes fetched by last read() */
+    size_t totRead;                     /* Total bytes read so far */
+    char *buf;
+    char ch;
+
+    if (n <= 0 || buffer == NULL) {
+        errno = EINVAL;
+        return -1;
+    }
+
+    buf = buffer;                       /* No pointer arithmetic on "void *" */
+	memset(buf, 0, MAX);
+    totRead = 0;
+    for (;;) {
+        numRead = read(fd, &ch, 1);
+        if (numRead == -1) {
+            if (errno == EINTR)         /* Interrupted --> restart read() */
+                continue;
+            else
+                return -1;              /* Some other error */
+
+        } else if (numRead == 0) {     /* EOF */
+            if (totRead == 0)           /* No bytes read; return 0 */
+                return 0;
+            else                        /* Some bytes read; add '\0' */
+                break;
+
+        } else {                        /* 'numRead' must be 1 if we get here */
+			if(ch != '\n' && ch != '\r')
+				if (totRead < n - 1) {      /* Discard > (n - 1) bytes */
+					totRead++;
+					*buf++ = ch;
+				}
+			if (ch == '\n' || ch == '\r')
+				break;
+        }
+    }
+    *buf = '\0';
+    return totRead;
 }
 
+
 int get_message(int sockfd, char** buff) {
-	memset(*buff, 0, sizeof(char) * MAX);
 	fd_set set;
 	struct timeval timeout;
 	int rv;
@@ -84,10 +129,11 @@ int get_message(int sockfd, char** buff) {
 		printf("[%d]Timeout\n", getpid()); /* a timeout occured */
 		return -1;
 	} else {
-		printf("Reading\n");
-		read_line(sockfd, buff);
+		do {
+			readLine(sockfd, *buff, MAX);
+		} while(strlen(*buff) == 0);
 	}
- 	printf("[%d]Received: *%s*\n", getpid(), *buff);
+ 	printf("[%d]Received: %s\n", getpid(), *buff);
  	return 0;
 }
 
@@ -120,8 +166,6 @@ int authentication_protocol(int sockfd, char **username) {
 			return 0;
 	}
     free(buff);
-    free(login);
-    free(pass);
 	return 0;
 }
 // for testing
@@ -265,13 +309,15 @@ void get_search_events_protocol(int sockfd) {
 	}
 	free(buff);
 }
+
 int db_add_user(USER_T user_info) {
 	return -1;
 }
+
 void add_user_protocol(int sockfd) {
 	send_message(sockfd, "ACK_ADD_USER\n");
 	
-	char* buff = malloc(sizeof(char) * MAX);	
+	char* buff = malloc(sizeof(char) * MAX);
 	USER_T user_info;
 	
 	user_info.l_name = malloc(sizeof(char) * MAX);
@@ -314,7 +360,12 @@ void add_user_protocol(int sockfd) {
 		send_message(sockfd, "INVALID_USER_INFO\n");
 	} else {
 		send_message(sockfd, "VALID_USER_INFO\n");
+		get_message(sockfd, &buff);
+		if(strstr(buff, "ACK_VALID_USER_INFO")) {
+			printf("[%d]Successfully created new user\n", getpid());
+		}
 	}
+	free(buff);
 	free(user_info.l_name);
 	free(user_info.f_name);
 	free(user_info.u_name);
@@ -324,6 +375,115 @@ void add_user_protocol(int sockfd) {
 	free(user_info.birth_place);
 	free(user_info.birth_date);
 	free(user_info.description);
+}
+
+void db_get_user_info(USER_T* user_info) {
+	char* buff = malloc(sizeof(char) * MAX);
+	strcpy(buff, "INFORMATION\n");
+	char* buff_date = malloc(sizeof(char) * MAX);
+	strcpy(buff_date, "1998-12-12\n");
+	user_info->l_name = buff;
+	user_info->f_name = buff;
+	user_info->city = buff;
+	user_info->email = buff;
+	user_info->tel = buff;
+	user_info->birth_date = buff_date;
+	user_info->birth_place = buff;
+	user_info->description = buff;
+}
+
+void get_user_info_protocol(int sockfd) {
+	char* buff = malloc(sizeof(char) * MAX);
+	send_message(sockfd, "ACK_GET_USER_INFO\n");
+	
+	get_message(sockfd, &buff);
+	
+	USER_T user_info;
+	db_get_user_info(&user_info);
+	send_message(sockfd, user_info.l_name);
+	send_message(sockfd, user_info.f_name);
+	send_message(sockfd, user_info.city);
+	send_message(sockfd, user_info.email);
+	send_message(sockfd, user_info.tel);
+	send_message(sockfd, user_info.birth_date);
+	send_message(sockfd, user_info.birth_place);
+	send_message(sockfd, user_info.description);
+	
+	get_message(sockfd, &buff);
+	if(strstr(buff, "ACK_USER_INFO")) {
+		printf("[%d]User info received by client\n", getpid());
+	}
+	
+	free(buff);
+	free(user_info.email);
+	free(user_info.birth_date);
+}
+
+int db_add_event(EVENT_T event_info) {
+	return -1;
+}
+
+void add_event_protocol(int sockfd) {
+	send_message(sockfd, "ACK_ADD_EVENT\n");
+	
+	char* buff = malloc(sizeof(char) * MAX);
+	EVENT_T event_info;
+	
+	event_info.event_title = malloc(sizeof(char) * MAX);
+	get_message(sockfd, &buff);
+	strcpy(event_info.event_title, buff);
+
+	event_info.event_theme = malloc(sizeof(char) * MAX);
+	get_message(sockfd, &buff);
+	strcpy(event_info.event_theme, buff);
+
+	event_info.event_guest = malloc(sizeof(char) * MAX);
+	get_message(sockfd, &buff);
+	strcpy(event_info.event_guest, buff);
+
+	event_info.event_date = malloc(sizeof(char) * MAX);
+	get_message(sockfd, &buff);
+	strcpy(event_info.event_date, buff);
+
+	event_info.event_time = malloc(sizeof(char) * MAX);
+	get_message(sockfd, &buff);
+	strcpy(event_info.event_time, buff);
+
+	event_info.event_deadline = malloc(sizeof(char) * MAX);
+	get_message(sockfd, &buff);
+	strcpy(event_info.event_deadline, buff);
+
+	event_info.event_capacity = malloc(sizeof(char) * MAX);
+	get_message(sockfd, &buff);
+	strcpy(event_info.event_capacity, buff);
+
+	event_info.event_description = malloc(sizeof(char) * MAX);
+	get_message(sockfd, &buff);
+	strcpy(event_info.event_description, buff);
+
+	event_info.event_address = malloc(sizeof(char) * MAX);
+	get_message(sockfd, &buff);
+	strcpy(event_info.event_address, buff);
+
+	if(db_add_event(event_info) < 0) {
+		send_message(sockfd, "INVALID_EVENT_INFO\n");
+	} else {
+		send_message(sockfd, "VALID_EVENT_INFO\n");
+		get_message(sockfd, &buff);
+		if(strstr(buff, "ACK_VALID_EVENT_INFO")) {
+			printf("[%d]Successfully created new event\n", getpid());
+		}
+	}
+	free(buff);
+	free(event_info.event_title);
+	free(event_info.event_theme);
+	free(event_info.event_guest);
+	free(event_info.event_date);
+	free(event_info.event_time);
+	free(event_info.event_deadline);
+	free(event_info.event_capacity);
+	free(event_info.event_description);
+	free(event_info.event_address);
 }
 // Function designed for chat between client and server. 
 void func(int sockfd) {
@@ -347,10 +507,26 @@ void func(int sockfd) {
 		} else if(strstr(buff, "GET_RECENT_EVENTS")) {
 			if(authenticated) {
 				get_recent_events_protocol(sockfd);
+			} else {
+				send_message(sockfd, "NOT_AUTHENTICATED");
 			}
 		} else if(strstr(buff, "GET_SEARCH_EVENTS")) {
 			if(authenticated) {
 				get_search_events_protocol(sockfd);
+			} else {
+				send_message(sockfd, "NOT_AUTHENTICATED");
+			}
+		} else if(strstr(buff, "GET_USER_INFO")) {
+			if(authenticated) {
+				get_user_info_protocol(sockfd);
+			} else {
+				send_message(sockfd, "NOT_AUTHENTICATED");
+			}
+		} else if(strstr(buff, "ADD_EVENT")) {
+			if(authenticated) {
+				add_event_protocol(sockfd);
+			} else {
+				send_message(sockfd, "NOT_AUTHENTICATED");
 			}
 		} else {
 			send_message(sockfd, "UNKNOWN_COMMAND\n");
