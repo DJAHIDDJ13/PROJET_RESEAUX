@@ -1,14 +1,13 @@
-﻿-- TABLE : Account
-INSERT INTO      
+﻿INSERT INTO      
 Account		(Username   ,User_Password                                                 ,Is_Admin)
 VALUES
-		('admin'    ,'$2y$10$jKKrDz6PD7gmfTBpMM5o1O0Dz.xSqO8yObk7ibjJ3OQXHwrlN3aFm',true     ),
-		('adam123'  ,'$2y$10$gOORjg1VwFGJUqarKRz92eEeaavHAG4/lRGV6KczX65lNryak3x8K',false    ),
-		('betty98'  ,'$2y$10$5nCC.w46d6GCEZ4MoMv1Wu8pGHAifK9gCkeknh6ORTZ/CafoMINNW',false    ),
-		('carol666' ,'$2y$10$Ox7xAbDv01Hjn4q4rdiJYu8d.tFfsHsnDMx3p7hDBxVB8obJ2CJ46',false    ),
-		('raphael42','$2y$10$F2du/i1gMHvy6jgQ3n95IeO6Xb/sFerpwJZW2WnkRlElmNLD/0bAa',false    ),
-		('2018omar' ,'$2y$10$fkAMwsYFWBX8MzR84lXauevtroSfBrj0jcwU2c6W8zzd6WuCYxhcK',false    ),
-		('chris2999','$2y$10$uZg1Kg4sgdndmT9tT78rteBEM8hgX2kqL0d.aayg6kVYMlk9CvX0u',false    );
+		('admin'    ,'$1$HbnLFBH6$7cNR5mgd9ntpaJrox4Nxd0',true     ),
+		('adam123'  ,'$1$8Yw3WSc6$kqlcSgnS766CqDp0hACW.1',false    ),
+		('betty98'  ,'$1$nBUmrGJq$hucs52XUTknwe/hSp3ZCW0',false    ),
+		('carol666' ,'$1$.uGbgdwb$t//eVKj5bzlwllehkS9ku/',false    ),
+		('raphael42','$1$Gh0cZmvU$OMrtvB3GA2StPCX8dESz5.',false    ),
+		('2018omar' ,'$1$/82YxqVc$JuaX3lk1alGj4G4R8Ex/F1',false    ),
+		('chris2999','$1$vRjENXf9$W3Qv.ohJ8wxm2.f6l3Mk2/',false    );
 
 
 -- hashfunc = bcrypt
@@ -38,26 +37,9 @@ VALUES
 		('2018/10/26'   ,'2018/10/26'   ,'15:51'        ,'chris2999'      ,'carol666'     ),
 		('2018/10/26'   ,'2018/10/26'   ,'16:16'        ,'betty98'        ,'carol666'     ),
 		('2018/10/16'   ,'2018/10/16'   ,'19:15'        ,'adam123'        ,'chris2999'    );
-		
--- Table : Theme
-
-INSERT INTO 
-Theme		(theme_title )
-VALUES
-		('concert'   ),
-		('exposition'),
-		('festival'  ),
-		('concours'  ),
-		('autre'     );
 
 
--- Table : Guest 
 
-INSERT INTO 
-Guest		(guest_title	 )
-VALUES 
-		('Tout le Monde'),
-		('Mes Amis'     );
 
 
 -- Table : Discussion 
@@ -73,13 +55,13 @@ VALUES
 -- Table : Event 
 
 INSERT INTO 
-Events     (event_time,event_date  ,event_address                             ,event_city ,event_title   ,description                                                             ,capacity,event_picture,proposition_date,confirmation_date,modification_date,deletion_date,confirmed        ,theme_id,deadline_date,guest_id,username_organizer,discussion_id)
+Events     (event_time,event_date  ,event_address                             ,event_city ,event_title   ,description                                                             ,capacity,event_picture,proposition_date,confirmation_date,modification_date,deletion_date,confirmed        ,event_theme,deadline_date,event_guest,username_organizer,discussion_id)
 
 VALUES 
-		   ('18:00'   ,'2019/02/02','1 carrefour de Longchamp-75016 Paris'    ,'Paris'    ,'Human'       ,'Exposition audiovisuel sur les effets de l''etre humain sur la planète',1000    ,null         ,'2018/10/17'    ,'2018/10/17'     ,'2018/10/17'     ,null         ,true            ,2       ,'2019/2/01' ,1       ,'adam123'         ,1 	   ),
-		   ('14:30'   ,'2019/02/12','Accorhotels arena 8 bd de bercy paris 12','Paris'    ,'Indochine 13','Concert de l''artiste Indochine dans son 13 eme tour'                  ,10000   ,null         ,'2018/10/17'    ,'2018/10/17'     ,'2018/10/17'     ,null         ,true            ,1       ,'2019/2/11' ,1       ,'adam123'         ,2   	   ),
-		   ('23:59'   ,'2999/12/31','A'                                       ,'Barcelone','A'           ,null                                                                    ,99999   ,null         ,'2018/10/24'    ,'2018/10/24'             ,'2018/10/25'     ,'2018/10/25' ,true            ,4       ,'2018/12/31' ,1       ,'2018omar'        ,4	       ),
-		   ('08:00'   ,'2019/01/16','Île de loisirs de Cergy-Pontoise'        ,'Cergy'    ,'Sortie Parc' ,'On va sortir vers le parc des loisirs'                                 ,200     ,null         ,'2018/10/27'    ,'2018/10/27'     ,'2018/10/30'     ,null         ,true             ,5       ,'2019/2/16' ,2       ,'betty98'         ,3  	           );
+		   ('18:00'   ,'2019/02/02','1 carrefour de Longchamp-75016 Paris'    ,'Paris'    ,'Human'       ,'Exposition audiovisuel sur les effets de l''etre humain sur la planète',1000    ,null         ,'2018/10/17'    ,'2018/10/17'     ,'2018/10/17'     ,null         ,true            ,'exposition'       ,'2019/2/01' ,'Tout le monde','adam123'         ,1 	   ),
+		   ('14:30'   ,'2019/02/12','Accorhotels arena 8 bd de bercy paris 12','Paris'    ,'Indochine 13','Concert de l''artiste Indochine dans son 13 eme tour'                  ,10000   ,null         ,'2018/10/17'    ,'2018/10/17'     ,'2018/10/17'     ,null         ,true            ,'concert'      ,'2019/2/11' ,'Tout le monde','adam123'         ,2   	   ),
+		   ('23:59'   ,'2999/12/31','A'                                       ,'Barcelone','A'           ,null                                                                    ,99999   ,null         ,'2018/10/24'    ,'2018/10/24'             ,'2018/10/25'     ,'2018/10/25' ,true            ,'concours'       ,'2018/12/31' ,'Tout le monde','2018omar'        ,4	       ),
+		   ('08:00'   ,'2019/01/16','Île de loisirs de Cergy-Pontoise'        ,'Cergy'    ,'Sortie Parc' ,'On va sortir vers le parc des loisirs'                                 ,200     ,null         ,'2018/10/27'    ,'2018/10/27'     ,'2018/10/30'     ,null         ,true             ,'autre'      ,'2019/2/16' ,'Mes Amis','betty98'         ,3  	           );
 
 -- Table : Notification 
 
@@ -161,4 +143,3 @@ VALUES
 		(8	   ,'adam123'  	     ,'14:38'  ,'2018/10/27'),
 		(8	   ,'betty98'        ,'14:34'  ,'2018/10/27'),
 		(8	   ,'carol666' 	     ,'14:55'  ,'2018/10/27');
-

@@ -10,6 +10,8 @@
 #include <time.h>
 #include <ctype.h>
 #include <errno.h>
+#include <libpq-fe.h>
+#include "func_util.h"
 
 #define MAX 2048 
 #define PORT 8080 
@@ -45,6 +47,14 @@ typedef struct {
 	char* description;
 } USER_T;
 
+typedef struct {
+	char* message_content;
+	char* message_date;
+	char* message_time;
+	char* message_writer;
+	char** message_seen;
+	int message_num_seen;
+} MESSAGE_T;
 
 void send_message(int sockfd, char* mes) {
 	if(write(sockfd, mes, strlen(mes)) != strlen(mes)) {
@@ -54,18 +64,6 @@ void send_message(int sockfd, char* mes) {
 	printf("[%d]Sent: %s\n", getpid(), mes);
 }
 
-void read_line(int sockfd, char** buff) {
-	char c;
-	int n = 0;
-	do {
-		if(read(sockfd, &c, 1) < 0) {
-			printf("[%d]Read error\n", getpid());
-			exit(-1);
-		}
-		*buff[n++] = c;
-		printf("%c\n", c);
-	} while(c != '\n' && c != '\r' && c != '\0' && n < MAX);
-}
 ssize_t readLine(int fd, void *buffer, size_t n) {
     ssize_t numRead;                    /* # of bytes fetched by last read() */
     size_t totRead;                     /* Total bytes read so far */
@@ -141,18 +139,19 @@ int is_valid_login(char* login, char* pass) {
 	return 1;
 }
 
-int authentication_protocol(int sockfd, char **username) {
+int authentication_protocol(int sockfd, PGconn *db_conn, char **username) {
 	char *buff = malloc(sizeof(char) * MAX);
 	send_message(sockfd, "ACK_AUTH\n");
 	
 	if(get_message(sockfd, &buff) < 0)
 		return -1;
 	char delim[] = " ";
-	buff[strlen(buff) - 1] = '\0';
+	buff[strlen(buff)] = '\0';
 	char *login = strtok(buff, delim);
 	char *pass = strtok(NULL, delim);
-	if(is_valid_login(login, pass)) {
+	if(test_login(db_conn, login, pass) == true) {
 		send_message(sockfd, "AUTH_ACCEPT\n");
+		strcpy(*username, login);
 		if(get_message(sockfd, &buff) < 0)
 			return -1;
 		if(strstr(buff, "ACK_ACCEPT")) {
@@ -168,6 +167,7 @@ int authentication_protocol(int sockfd, char **username) {
     free(buff);
 	return 0;
 }
+/*
 // for testing
 EVENT_T *db_get_recent_events(int *n, EVENT_T *events) {
 	*n = 5;
@@ -196,32 +196,40 @@ EVENT_T *db_get_recent_events(int *n, EVENT_T *events) {
 		events[i].event_state = buff;
 	}
 	return events;
+}*/
+
+char *add_line_break(char* str) {
+	char *res = malloc(sizeof(char) * (strlen(str) + 2));
+	strcpy(res, str);
+	res[strlen(str)] = '\n';
+	res[strlen(str)+1] = '\0';
+	return  res;
 }
 
-void get_recent_events_protocol(int sockfd) {
+void get_recent_events_protocol(int sockfd, PGconn *db_conn) {
 	int n;
-	EVENT_T *events = NULL;
+	Event *events = NULL;
 	send_message(sockfd, "ACK_GET_RECENT_EVENTS\n");
 	char* buff = malloc(sizeof(char) * MAX);
 	get_message(sockfd, &buff);
 	if(strstr(buff, "GET_EVENTS_NUM")) {
-		events = db_get_recent_events(&n, events);
+		events = db_get_recent_events(db_conn, &n, events);
 		sprintf(buff, "%d\n", n);
 		send_message(sockfd, buff);
 		for(int i=0; i<n; i++) {
-			send_message(sockfd, events[i].event_id);
-			send_message(sockfd, events[i].event_title);
-			send_message(sockfd, events[i].event_organizer);
-			send_message(sockfd, events[i].event_city);
-			send_message(sockfd, events[i].event_date);
-			send_message(sockfd, events[i].event_time);
-			send_message(sockfd, events[i].event_deadline);
-			send_message(sockfd, events[i].event_description);
-			send_message(sockfd, events[i].event_address);
-			send_message(sockfd, events[i].event_capacity);
-			send_message(sockfd, events[i].event_theme);
-			send_message(sockfd, events[i].event_guest);
-			send_message(sockfd, events[i].event_state);
+			send_message(sockfd, add_line_break(events[i].event_id));
+			send_message(sockfd, add_line_break(events[i].event_title));
+			send_message(sockfd, add_line_break(events[i].username_organizer));
+			send_message(sockfd, add_line_break(events[i].event_city));
+			send_message(sockfd, add_line_break(events[i].event_date));
+			send_message(sockfd, add_line_break(events[i].event_time));
+			send_message(sockfd, add_line_break(events[i].deadline_date));
+			send_message(sockfd, add_line_break(events[i].description));
+			send_message(sockfd, add_line_break(events[i].event_address));
+			send_message(sockfd, add_line_break(events[i].capacity));
+			send_message(sockfd, add_line_break(events[i].event_theme));
+			send_message(sockfd, add_line_break(events[i].event_guest));
+			send_message(sockfd, events[i].state);
 
 			get_message(sockfd, &buff);
 			if(!strstr(buff, "ACK_EVENT")) {
@@ -233,11 +241,11 @@ void get_recent_events_protocol(int sockfd) {
 	}
 	free(buff);
 }
-
-EVENT_T *db_get_search_result(int *n, EVENT_T *events, char* username, char* event_name, char* start_date, char* end_date, int *state) {
+/*
+Event *db_get_search_result(int *n, Event *events, char* username, char* event_name, char* start_date, char* end_date, int *state) {
 	*state = 1;
 	*n = 5;
-	events = malloc(sizeof(EVENT_T) * (*n));
+	events = malloc(sizeof(Event) * (*n));
 	
 	char *buff = malloc(sizeof(char) * MAX);
 	strcpy(buff, "111222\n");
@@ -249,23 +257,24 @@ EVENT_T *db_get_search_result(int *n, EVENT_T *events, char* username, char* eve
 	for(int i=0; i<*n; i++) {
 		events[i].event_id = buff;
 		events[i].event_title = buff;
-		events[i].event_organizer = buff;
+		events[i].username_organizer = buff;
 		events[i].event_city = buff;
 		events[i].event_date = buff1;
 		events[i].event_time = buff2;
-		events[i].event_deadline = buff1;
-		events[i].event_description = buff;
+		events[i].deadline_date = buff1;
+		events[i].description = buff;
 		events[i].event_address = buff;
-		events[i].event_capacity = buff;
+		events[i].capacity = buff;
 		events[i].event_theme = buff;
 		events[i].event_guest = buff;
-		events[i].event_state = buff;
+		events[i].state = buff;
 	}
 	return events;
 }
-void get_search_events_protocol(int sockfd) {
+*/
+void get_search_events_protocol(int sockfd, PGconn* db_conn) {
 	int n;
-	EVENT_T *events = NULL;
+	Event *events = NULL;
 	send_message(sockfd, "ACK_GET_SEARCH_EVENTS\n");
 	char* buff = malloc(sizeof(char) * MAX);
 	get_message(sockfd, &buff);
@@ -275,28 +284,28 @@ void get_search_events_protocol(int sockfd) {
 	char* start_date  = strtok(NULL, delim);
 	char* end_date  = strtok(NULL, delim);
 	int state;
-	events = db_get_search_result(&n, events, username, event_name, start_date, end_date, &state);
+	events = search_events(db_conn , &n, &state, events, username, event_name, start_date, end_date, "");
+	//events = db_get_search_result(&n, events, username, event_name, start_date, end_date, &state);
 	if(state > 0) {
 		send_message(sockfd, "VALID_SEARCH_QUERY\n");
 		get_message(sockfd, &buff);
 		if(strstr(buff, "GET_EVENTS_NUM")) {
-			events = db_get_recent_events(&n, events);
 			sprintf(buff, "%d\n", n);
 			send_message(sockfd, buff);
 			for(int i=0; i<n; i++) {
-				send_message(sockfd, events[i].event_id);
-				send_message(sockfd, events[i].event_title);
-				send_message(sockfd, events[i].event_organizer);
-				send_message(sockfd, events[i].event_city);
-				send_message(sockfd, events[i].event_date);
-				send_message(sockfd, events[i].event_time);
-				send_message(sockfd, events[i].event_deadline);
-				send_message(sockfd, events[i].event_description);
-				send_message(sockfd, events[i].event_address);
-				send_message(sockfd, events[i].event_capacity);
-				send_message(sockfd, events[i].event_theme);
-				send_message(sockfd, events[i].event_guest);
-				send_message(sockfd, events[i].event_state);
+				send_message(sockfd, add_line_break(events[i].event_id));
+				send_message(sockfd, add_line_break(events[i].event_title));
+				send_message(sockfd, add_line_break(events[i].username_organizer));
+				send_message(sockfd, add_line_break(events[i].event_city));
+				send_message(sockfd, add_line_break(events[i].event_date));
+				send_message(sockfd, add_line_break(events[i].event_time));
+				send_message(sockfd, add_line_break(events[i].deadline_date));
+				send_message(sockfd, add_line_break(events[i].description));
+				send_message(sockfd, add_line_break(events[i].event_address));
+				send_message(sockfd, add_line_break(events[i].capacity));
+				send_message(sockfd, add_line_break(events[i].event_theme));
+				send_message(sockfd, add_line_break(events[i].event_guest));
+				send_message(sockfd, events[i].state);
 
 				get_message(sockfd, &buff);
 				if(!strstr(buff, "ACK_EVENT")) {
@@ -314,7 +323,7 @@ int db_add_user(USER_T user_info) {
 	return -1;
 }
 
-void add_user_protocol(int sockfd) {
+void add_user_protocol(int sockfd, PGconn* db_conn) {
 	send_message(sockfd, "ACK_ADD_USER\n");
 	
 	char* buff = malloc(sizeof(char) * MAX);
@@ -355,8 +364,9 @@ void add_user_protocol(int sockfd) {
 	user_info.description = malloc(sizeof(char) * MAX);
 	get_message(sockfd, &buff);
 	strcpy(user_info.description, buff);
-
-	if(db_add_user(user_info) < 0) {
+	
+	int status_add = add_user(db_conn , user_info.u_name ,user_info.pass , user_info.email , user_info.l_name , user_info.f_name , user_info.description , user_info.birth_date, user_info.birth_place , user_info.tel, "");
+	if(status_add < 0) {
 		send_message(sockfd, "INVALID_USER_INFO\n");
 	} else {
 		send_message(sockfd, "VALID_USER_INFO\n");
@@ -423,7 +433,7 @@ int db_add_event(EVENT_T event_info) {
 	return -1;
 }
 
-void add_event_protocol(int sockfd) {
+void add_event_protocol(int sockfd, PGconn *db_conn, char *login) {
 	send_message(sockfd, "ACK_ADD_EVENT\n");
 	
 	char* buff = malloc(sizeof(char) * MAX);
@@ -464,8 +474,12 @@ void add_event_protocol(int sockfd) {
 	event_info.event_address = malloc(sizeof(char) * MAX);
 	get_message(sockfd, &buff);
 	strcpy(event_info.event_address, buff);
+	
+	printf("login is %s\n", login);
+	int ret_status = add_event(db_conn , event_info.event_time , event_info.event_date , event_info.event_address , "Cergy" , event_info.event_title , 
+	event_info.event_theme , event_info.event_guest , event_info.event_description , atoi(event_info.event_capacity), "" , event_info.event_deadline , login);
 
-	if(db_add_event(event_info) < 0) {
+	if(ret_status < 0) {
 		send_message(sockfd, "INVALID_EVENT_INFO\n");
 	} else {
 		send_message(sockfd, "VALID_EVENT_INFO\n");
@@ -485,8 +499,133 @@ void add_event_protocol(int sockfd) {
 	free(event_info.event_description);
 	free(event_info.event_address);
 }
+EVENT_T db_get_event_info(char* event_id, EVENT_T events) {
+	char *buff = malloc(sizeof(char) * MAX);
+	strcpy(buff, "111222\n");
+	char *buff1 = malloc(sizeof(char) * MAX);
+	strcpy(buff1, "2015-12-12\n");
+	char *buff2 = malloc(sizeof(char) * MAX);
+	strcpy(buff2, "15:16\n");
+
+	events.event_id = buff;
+	events.event_title = buff;
+	events.event_organizer = buff;
+	events.event_city = buff;
+	events.event_date = buff1;
+	events.event_time = buff2;
+	events.event_deadline = buff1;
+	events.event_description = buff;
+	events.event_address = buff;
+	events.event_capacity = buff;
+	events.event_theme = buff;
+	events.event_guest = buff;
+	events.event_state = buff;
+	return events;
+}
+MESSAGE_T* db_get_messages(int *n, MESSAGE_T* messages) {
+	*n = 5;
+	messages = malloc(sizeof(MESSAGE_T) * (*n));
+	
+	char *buff = malloc(sizeof(char) * MAX);
+	strcpy(buff, "message\n");
+	char *buff1 = malloc(sizeof(char) * MAX);
+	strcpy(buff1, "2015-12-12\n");
+	char *buff2 = malloc(sizeof(char) * MAX);
+	strcpy(buff2, "15:16\n");
+	char **buff3 = malloc(sizeof(char*) * 2);
+	buff3[0] = malloc(sizeof(char) * MAX);
+	strcpy(buff3[0], "user1\n");
+	buff3[1] = malloc(sizeof(char) * MAX);
+	strcpy(buff3[1], "user2\n");
+	
+	for(int i=0; i<*n; i++) {
+		messages[i].message_content = buff;
+		messages[i].message_writer = buff;
+		messages[i].message_date = buff1;
+		messages[i].message_time = buff2;
+		messages[i].message_seen = buff3;
+		messages[i].message_num_seen = 2;
+	}
+	return messages;
+}
+
+void get_messages_protocol(int sockfd) {
+	char* buff = malloc(sizeof(char) * MAX);
+	get_message(sockfd, &buff);
+	MESSAGE_T* messages = NULL;
+	int n;
+	messages = db_get_messages(&n, messages);
+	if(strstr(buff, "GET_MESSAGES")) {
+		sprintf(buff, "%d\n", n);
+		send_message(sockfd, buff);
+		for(int i=0; i<n; i++) {
+			printf("%s\n", messages[i].message_content);
+			send_message(sockfd, messages[i].message_writer);
+			send_message(sockfd, messages[i].message_date);
+			send_message(sockfd, messages[i].message_time);
+			send_message(sockfd, messages[i].message_content);
+			sprintf(buff, "%d\n", messages[i].message_num_seen);
+			send_message(sockfd, buff);
+			for(int j=0; j<messages[j].message_num_seen; j++) {
+				send_message(sockfd, messages[i].message_seen[j]);
+			}
+			get_message(sockfd, &buff);
+			if(!strstr(buff, "ACK_MESSAGE")) {
+				break;
+			}
+		}
+	}
+	free(buff);
+	free(messages[0].message_seen[0]);
+	free(messages[0].message_seen[1]);
+	free(messages[0].message_seen);
+	free(messages[0].message_content);
+	free(messages[0].message_date);
+	free(messages[0].message_time);
+	free(messages);
+
+}
+
+void get_event_info_protocol(int sockfd) {
+	send_message(sockfd, "ACK_GET_EVENT_INFO\n");
+	char* buff = malloc(sizeof(char) * MAX);
+	get_message(sockfd, &buff);
+	EVENT_T event_info;
+	event_info = db_get_event_info(buff, event_info);
+	send_message(sockfd, event_info.event_id);
+	send_message(sockfd, event_info.event_title);
+	send_message(sockfd, event_info.event_organizer);
+	send_message(sockfd, event_info.event_city);
+	send_message(sockfd, event_info.event_date);
+	send_message(sockfd, event_info.event_time);
+	send_message(sockfd, event_info.event_deadline);
+	send_message(sockfd, event_info.event_description);
+	send_message(sockfd, event_info.event_address);
+	send_message(sockfd, event_info.event_capacity);
+	send_message(sockfd, event_info.event_theme);
+	send_message(sockfd, event_info.event_guest);
+	send_message(sockfd, event_info.event_state);
+	
+	get_message(sockfd, &buff);
+	if(strstr(buff, "ACK_EVENT")) {
+		get_messages_protocol(sockfd);
+	}
+}
+int db_send_message(char* mes, char* login) {
+	return 0;
+}
+void send_message_protocol(int sockfd, char* login) {
+	send_message(sockfd, "ACK_SEND_MESSAGE\n");
+	char* buff = malloc(sizeof(char) * MAX);
+	get_message(sockfd, &buff);
+	if(db_send_message(buff, login) < 0) {
+		send_message(sockfd, "MESSAGE_NOT_SENT\n");
+	} else {
+		send_message(sockfd, "MESSAGE_SENT\n");
+	}
+}
 // Function designed for chat between client and server. 
-void func(int sockfd) {
+void func(int sockfd, PGconn* db_conn) {
 	int authenticated = 0;
 	char* login = malloc(sizeof(char) * 255);
 	char *buff = malloc(sizeof(char) * MAX);
@@ -496,23 +635,23 @@ void func(int sockfd) {
 		if(get_message(sockfd, &buff) < 0)
 			break;
         if(strstr(buff, "AUTH")) {
-			authenticated = authentication_protocol(sockfd, &login);
+			authenticated = authentication_protocol(sockfd, db_conn, &login);
 			if(authenticated < 0)
 				break;
 		} else if(strstr(buff, "ADD_USER")) {
-			add_user_protocol(sockfd);
+			add_user_protocol(sockfd, db_conn);
 		} else if(strstr(buff, "EXIT")) {
 			send_message(sockfd, "ACK_EXIT\n");
 			break;
 		} else if(strstr(buff, "GET_RECENT_EVENTS")) {
 			if(authenticated) {
-				get_recent_events_protocol(sockfd);
+				get_recent_events_protocol(sockfd, db_conn);
 			} else {
 				send_message(sockfd, "NOT_AUTHENTICATED");
 			}
 		} else if(strstr(buff, "GET_SEARCH_EVENTS")) {
 			if(authenticated) {
-				get_search_events_protocol(sockfd);
+				get_search_events_protocol(sockfd, db_conn);
 			} else {
 				send_message(sockfd, "NOT_AUTHENTICATED");
 			}
@@ -524,7 +663,19 @@ void func(int sockfd) {
 			}
 		} else if(strstr(buff, "ADD_EVENT")) {
 			if(authenticated) {
-				add_event_protocol(sockfd);
+				add_event_protocol(sockfd, db_conn, login);
+			} else {
+				send_message(sockfd, "NOT_AUTHENTICATED");
+			}
+		} else if(strstr(buff, "GET_EVENT_INFO")) {
+			if(authenticated) {
+				get_event_info_protocol(sockfd);
+			} else {
+				send_message(sockfd, "NOT_AUTHENTICATED");
+			}
+		} else if(strstr(buff, "SEND_MESSAGE")) {
+			if(authenticated) {
+				send_message_protocol(sockfd, login);
 			} else {
 				send_message(sockfd, "NOT_AUTHENTICATED");
 			}
@@ -538,6 +689,7 @@ void func(int sockfd) {
   
 // Driver function 
 int main() {
+	PGconn *db_conn = db_connect();
     int sockfd, connfd;
     unsigned int len;
     pid_t ppid = getpid();
@@ -595,7 +747,7 @@ int main() {
 	}
 	// Function for chatting between client and server
 	if(getpid() != ppid) {
-		func(connfd); 
+		func(connfd, db_conn); 
 	} else {
 		close(sockfd); 
 	}

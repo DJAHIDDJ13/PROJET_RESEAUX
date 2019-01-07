@@ -68,6 +68,8 @@ BEGIN
 	END IF;
 END;$$ LANGUAGE 'plpgsql' IMMUTABLE;
 
+CREATE TYPE theme AS ENUM ('concert', 'exposition' , 'festival' , 'concours','autre');
+CREATE TYPE guest AS ENUM ('Tout le monde' ,'Mes Amis');
 
 CREATE TABLE Account (
 	Username VARCHAR(255) NOT NULL PRIMARY KEY,
@@ -104,16 +106,6 @@ CREATE TABLE Discussion (
 );
 
 
-CREATE TABLE Theme (
-	Theme_ID SERIAL PRIMARY KEY,
-	Theme_Title VARCHAR(255) NOT NULL
-);
-
-CREATE TABLE Guest (
-	Guest_ID SERIAL PRIMARY KEY,
-	Guest_Title VARCHAR(255) NOT NULL
-);
-
 CREATE TABLE Events (
 	Event_ID SERIAL PRIMARY KEY,
 	Event_Time TIME NOT NULL,
@@ -121,6 +113,8 @@ CREATE TABLE Events (
 	Event_Address VARCHAR(255) NOT NULL,
 	Event_City  VARCHAR(255) NOT NULL,
 	Event_Title VARCHAR(255) NOT NULL,
+	Event_Theme theme,
+	Event_Guest guest,
 	Description TEXT,
 	Capacity INTEGER,
 	Event_Picture VARCHAR(255),
@@ -130,8 +124,6 @@ CREATE TABLE Events (
 	Confirmation_Date DATE,
 	Modification_Date DATE NOT NULL,
 	Deletion_Date DATE,
-	Theme_ID INTEGER REFERENCES Theme(Theme_ID),
-	Guest_ID INTEGER REFERENCES Guest(Guest_ID),
 	Username_Organizer VARCHAR(255) REFERENCES Users(Username),
 	Discussion_ID INTEGER REFERENCES Discussion(Discussion_ID),
 	
