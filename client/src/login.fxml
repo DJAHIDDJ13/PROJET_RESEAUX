@@ -56,7 +56,9 @@
                   <RowConstraints maxHeight="344.6" minHeight="10.0" prefHeight="122.39999389648439" vgrow="SOMETIMES" />
                 <RowConstraints maxHeight="50.0" minHeight="50.0" prefHeight="50.0" vgrow="SOMETIMES" />
                 <RowConstraints maxHeight="50.0" minHeight="50.0" prefHeight="50.0" vgrow="SOMETIMES" />
-                <RowConstraints maxHeight="222.59998779296876" minHeight="10.0" prefHeight="204.39999999999998" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="222.59998779296876" minHeight="10.0" prefHeight="119.60002441406249" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="222.59998779296876" minHeight="10.0" prefHeight="59.5999755859375" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="222.59998779296876" minHeight="10.0" prefHeight="70.00002441406247" vgrow="SOMETIMES" />
                   <RowConstraints maxHeight="222.59998779296876" minHeight="0.0" prefHeight="10.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
@@ -68,6 +70,11 @@
                         <Font size="30.0" />
                      </font>
                   </Label>
+                  <Label fx:id="flash_label" textFill="#f00000" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="5">
+                     <font>
+                        <Font size="11.0" />
+                     </font></Label>
+                  <Hyperlink fx:id="flash_link" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
                </children>
             </GridPane>
          </children>
