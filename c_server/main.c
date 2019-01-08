@@ -14,7 +14,6 @@
 #include "func_util.h"
 
 #define MAX 2048 
-#define PORT 8080 
 #define TIMEOUT 100
 #define SA struct sockaddr 
 
@@ -102,7 +101,7 @@ int get_message(int sockfd, char** buff) {
 
 	FD_ZERO(&set); 
 	FD_SET(sockfd, &set); 
-
+	
 	timeout.tv_sec = 8*60*60;
 	timeout.tv_usec = 0;
 
@@ -375,20 +374,6 @@ void add_user_protocol(int sockfd, PGconn* db_conn) {
 	free(user_info.description);
 }
 
-/*void db_get_user_info(USER_T* user_info) {
-	char* buff = malloc(sizeof(char) * MAX);
-	strcpy(buff, "INFORMATION\n");
-	char* buff_date = malloc(sizeof(char) * MAX);
-	strcpy(buff_date, "1998-12-12\n");
-	user_info->l_name = buff;
-	user_info->f_name = buff;
-	user_info->city = buff;
-	user_info->email = buff;
-	user_info->tel = buff;
-	user_info->birth_date = buff_date;
-	user_info->birth_place = buff;
-	user_info->description = buff;
-}*/
 
 void get_user_info_protocol(int sockfd, PGconn *db_conn) {
 	char* buff = malloc(sizeof(char) * MAX);
@@ -459,7 +444,6 @@ void add_event_protocol(int sockfd, PGconn *db_conn, char *login) {
 	get_message(sockfd, &buff);
 	strcpy(event_info.event_address, buff);
 	
-	printf("login is %s\n", login);
 	int ret_status = add_event(db_conn , event_info.event_time , event_info.event_date , event_info.event_address , "Cergy" , event_info.event_title , 
 	event_info.event_theme , event_info.event_guest , event_info.event_description , atoi(event_info.event_capacity), "" , event_info.event_deadline , login);
 
@@ -673,7 +657,12 @@ void func(int sockfd, PGconn* db_conn) {
 } 
   
 
-int main() {
+int main(int argc, char** argv) {
+	int PORT = 8080;
+	if(argc == 2) {
+		PORT = atoi(argv[1]);
+		printf("%d\n", PORT);
+	}
 	PGconn *db_conn = db_connect();
     int sockfd, connfd;
     unsigned int len;
@@ -709,13 +698,12 @@ int main() {
         printf("Server listening..\n"); 
     len = sizeof(cli); 
 	int client_count = 0;
-	int *pipes[2];
 	while(1) {
 		client_count ++;
 		connfd = accept(sockfd, (SA*)&cli, &len); 
-		if (connfd < 0) { 
+		if (connfd < 0) {
 			printf("server acccept failed...\n"); 
-			exit(0); 
+			exit(0);
 		} else {
 			printf("server acccept the client...\n"); 
 			pid_t pid = fork();
@@ -728,7 +716,6 @@ int main() {
 			}
 		}
 	}
-
 	if(getpid() != ppid) {
 		func(connfd, db_conn); 
 	} else {
