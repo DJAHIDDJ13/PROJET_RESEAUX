@@ -34,18 +34,6 @@ typedef struct {
 	char* event_state;
 } EVENT_T;
 
-typedef struct {
-	char* l_name;
-	char* f_name;
-	char* u_name;
-	char* pass;
-	char* city;
-	char* email;
-	char* tel;
-	char* birth_place;
-	char* birth_date;
-	char* description;
-} USER_T;
 
 typedef struct {
 	char* message_content;
@@ -75,26 +63,26 @@ ssize_t readLine(int fd, void *buffer, size_t n) {
         return -1;
     }
 
-    buf = buffer;                       /* No pointer arithmetic on "void *" */
+    buf = buffer;                       
 	memset(buf, 0, MAX);
     totRead = 0;
-    for (;;) {
+    while(totRead < MAX -1) {
         numRead = read(fd, &ch, 1);
         if (numRead == -1) {
-            if (errno == EINTR)         /* Interrupted --> restart read() */
+            if (errno == EINTR)         
                 continue;
             else
-                return -1;              /* Some other error */
+                return -1;              
 
-        } else if (numRead == 0) {     /* EOF */
-            if (totRead == 0)           /* No bytes read; return 0 */
+        } else if (numRead == 0) {     
+            if (totRead == 0)           
                 return 0;
-            else                        /* Some bytes read; add '\0' */
+            else                        
                 break;
 
-        } else {                        /* 'numRead' must be 1 if we get here */
+        } else {                        
 			if(ch != '\n' && ch != '\r')
-				if (totRead < n - 1) {      /* Discard > (n - 1) bytes */
+				if (totRead < n - 1) {     
 					totRead++;
 					*buf++ = ch;
 				}
@@ -112,19 +100,19 @@ int get_message(int sockfd, char** buff) {
 	struct timeval timeout;
 	int rv;
 
-	FD_ZERO(&set); /* clear the set */
-	FD_SET(sockfd, &set); /* add our file descriptor to the set */
+	FD_ZERO(&set); 
+	FD_SET(sockfd, &set); 
 
 	timeout.tv_sec = 8*60*60;
 	timeout.tv_usec = 0;
 
 	rv = select(sockfd + 1, &set, NULL, NULL, &timeout);
 	if(rv == -1) {
-		printf("[%d]Select\n", getpid()); /* an error accured */
+		printf("[%d]Select\n", getpid()); 
 		return -1;
 	} else if(rv == 0) {
 		send_message(sockfd, "TIMEOUT_EXIT\n");
-		printf("[%d]Timeout\n", getpid()); /* a timeout occured */
+		printf("[%d]Timeout\n", getpid());
 		return -1;
 	} else {
 		do {
@@ -200,9 +188,13 @@ EVENT_T *db_get_recent_events(int *n, EVENT_T *events) {
 
 char *add_line_break(char* str) {
 	char *res = malloc(sizeof(char) * (strlen(str) + 2));
-	strcpy(res, str);
-	res[strlen(str)] = '\n';
-	res[strlen(str)+1] = '\0';
+	if(str[0] == '\0') {
+		strcpy(res, "null\n");
+	} else {
+		strcpy(res, str);
+		res[strlen(str)] = '\n';
+		res[strlen(str)+1] = '\0';
+	}
 	return  res;
 }
 
@@ -241,10 +233,10 @@ void get_recent_events_protocol(int sockfd, PGconn *db_conn) {
 	}
 	free(buff);
 }
-/*
+
 Event *db_get_search_result(int *n, Event *events, char* username, char* event_name, char* start_date, char* end_date, int *state) {
 	*state = 1;
-	*n = 5;
+	*n = 2;
 	events = malloc(sizeof(Event) * (*n));
 	
 	char *buff = malloc(sizeof(char) * MAX);
@@ -271,7 +263,7 @@ Event *db_get_search_result(int *n, Event *events, char* username, char* event_n
 	}
 	return events;
 }
-*/
+
 void get_search_events_protocol(int sockfd, PGconn* db_conn) {
 	int n;
 	Event *events = NULL;
@@ -284,8 +276,8 @@ void get_search_events_protocol(int sockfd, PGconn* db_conn) {
 	char* start_date  = strtok(NULL, delim);
 	char* end_date  = strtok(NULL, delim);
 	int state;
-	events = search_events(db_conn , &n, &state, events, username, event_name, start_date, end_date, "");
-	//events = db_get_search_result(&n, events, username, event_name, start_date, end_date, &state);
+	//events = search_events(db_conn , &n, &state, events, username, event_name, start_date, end_date, "");
+	events = db_get_search_result(&n, events, username, event_name, start_date, end_date, &state);
 	if(state > 0) {
 		send_message(sockfd, "VALID_SEARCH_QUERY\n");
 		get_message(sockfd, &buff);
@@ -317,10 +309,6 @@ void get_search_events_protocol(int sockfd, PGconn* db_conn) {
 		}
 	}
 	free(buff);
-}
-
-int db_add_user(USER_T user_info) {
-	return -1;
 }
 
 void add_user_protocol(int sockfd, PGconn* db_conn) {
@@ -387,7 +375,7 @@ void add_user_protocol(int sockfd, PGconn* db_conn) {
 	free(user_info.description);
 }
 
-void db_get_user_info(USER_T* user_info) {
+/*void db_get_user_info(USER_T* user_info) {
 	char* buff = malloc(sizeof(char) * MAX);
 	strcpy(buff, "INFORMATION\n");
 	char* buff_date = malloc(sizeof(char) * MAX);
@@ -400,33 +388,29 @@ void db_get_user_info(USER_T* user_info) {
 	user_info->birth_date = buff_date;
 	user_info->birth_place = buff;
 	user_info->description = buff;
-}
+}*/
 
-void get_user_info_protocol(int sockfd) {
+void get_user_info_protocol(int sockfd, PGconn *db_conn) {
 	char* buff = malloc(sizeof(char) * MAX);
 	send_message(sockfd, "ACK_GET_USER_INFO\n");
 	
 	get_message(sockfd, &buff);
 	
 	USER_T user_info;
-	db_get_user_info(&user_info);
-	send_message(sockfd, user_info.l_name);
-	send_message(sockfd, user_info.f_name);
-	send_message(sockfd, user_info.city);
-	send_message(sockfd, user_info.email);
-	send_message(sockfd, user_info.tel);
-	send_message(sockfd, user_info.birth_date);
-	send_message(sockfd, user_info.birth_place);
-	send_message(sockfd, user_info.description);
+	get_user_infos(db_conn, buff, &user_info);
+	send_message(sockfd, add_line_break(user_info.l_name));
+	send_message(sockfd, add_line_break(user_info.f_name));
+	send_message(sockfd, add_line_break(user_info.email));
+	send_message(sockfd, add_line_break(user_info.tel));
+	send_message(sockfd, add_line_break(user_info.birth_date));
+	send_message(sockfd, add_line_break(user_info.birth_place));
+	send_message(sockfd, add_line_break(user_info.description));
 	
 	get_message(sockfd, &buff);
 	if(strstr(buff, "ACK_USER_INFO")) {
 		printf("[%d]User info received by client\n", getpid());
 	}
-	
 	free(buff);
-	free(user_info.email);
-	free(user_info.birth_date);
 }
 
 int db_add_event(EVENT_T event_info) {
@@ -499,6 +483,7 @@ void add_event_protocol(int sockfd, PGconn *db_conn, char *login) {
 	free(event_info.event_description);
 	free(event_info.event_address);
 }
+
 EVENT_T db_get_event_info(char* event_id, EVENT_T events) {
 	char *buff = malloc(sizeof(char) * MAX);
 	strcpy(buff, "111222\n");
@@ -522,6 +507,7 @@ EVENT_T db_get_event_info(char* event_id, EVENT_T events) {
 	events.event_state = buff;
 	return events;
 }
+
 MESSAGE_T* db_get_messages(int *n, MESSAGE_T* messages) {
 	*n = 5;
 	messages = malloc(sizeof(MESSAGE_T) * (*n));
@@ -624,14 +610,13 @@ void send_message_protocol(int sockfd, char* login) {
 		send_message(sockfd, "MESSAGE_SENT\n");
 	}
 }
-// Function designed for chat between client and server. 
+
 void func(int sockfd, PGconn* db_conn) {
 	int authenticated = 0;
 	char* login = malloc(sizeof(char) * 255);
 	char *buff = malloc(sizeof(char) * MAX);
-    // infinite loop for chat 
+
     while(1) {
-        // read the message from client and copy it in buffer 
 		if(get_message(sockfd, &buff) < 0)
 			break;
         if(strstr(buff, "AUTH")) {
@@ -657,7 +642,7 @@ void func(int sockfd, PGconn* db_conn) {
 			}
 		} else if(strstr(buff, "GET_USER_INFO")) {
 			if(authenticated) {
-				get_user_info_protocol(sockfd);
+				get_user_info_protocol(sockfd, db_conn);
 			} else {
 				send_message(sockfd, "NOT_AUTHENTICATED");
 			}
@@ -687,14 +672,14 @@ void func(int sockfd, PGconn* db_conn) {
     printf("[%d]Exiting..\n", getpid());
 } 
   
-// Driver function 
+
 int main() {
 	PGconn *db_conn = db_connect();
     int sockfd, connfd;
     unsigned int len;
     pid_t ppid = getpid();
     struct sockaddr_in servaddr, cli; 
-    // socket create and verification 
+
     sockfd = socket(AF_INET, SOCK_STREAM, 0); 
     if (sockfd == -1) { 
         printf("socket creation failed...\n"); 
@@ -704,12 +689,10 @@ int main() {
         printf("Socket successfully created..\n"); 
     bzero(&servaddr, sizeof(servaddr)); 
   
-    // assign IP, PORT 
     servaddr.sin_family = AF_INET; 
     servaddr.sin_addr.s_addr = htonl(INADDR_ANY); 
     servaddr.sin_port = htons(PORT); 
   
-    // Binding newly created socket to given IP and verification 
     if ((bind(sockfd, (SA*)&servaddr, sizeof(servaddr))) != 0) {
         printf("socket bind failed...\n"); 
         exit(0); 
@@ -717,7 +700,7 @@ int main() {
     else
         printf("Socket successfully binded..\n"); 
   
-    // Now server is ready to listen and verification 
+
     if ((listen(sockfd, 5)) != 0) {
         printf("Listen failed...\n"); 
         exit(0); 
@@ -726,7 +709,7 @@ int main() {
         printf("Server listening..\n"); 
     len = sizeof(cli); 
 	int client_count = 0;
-    // Accept the data packet from client and verification 
+	int *pipes[2];
 	while(1) {
 		client_count ++;
 		connfd = accept(sockfd, (SA*)&cli, &len); 
@@ -745,7 +728,7 @@ int main() {
 			}
 		}
 	}
-	// Function for chatting between client and server
+
 	if(getpid() != ppid) {
 		func(connfd, db_conn); 
 	} else {

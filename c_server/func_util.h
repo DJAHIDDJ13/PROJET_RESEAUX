@@ -28,6 +28,18 @@ typedef struct{
 	char* state;
 } Event;
 
+typedef struct {
+	char* l_name;
+	char* f_name;
+	char* u_name;
+	char* pass;
+	char* email;
+	char* tel;
+	char* birth_place;
+	char* birth_date;
+	char* description;
+} USER_T;
+
 PGconn* db_connect();
 bool test_login(PGconn *conn ,char* username , char* password );
 
@@ -40,5 +52,5 @@ int add_event(PGconn *conn , char* time , char* date , char* adress , char* city
 
 Event *db_get_recent_events(PGconn *conn, int *n, Event *events);
 
-Event *search_events( PGconn *conn , int *n, int* state, Event *events, char* username, char* event_title, char* start_date, char* end_date, char* event_theme);
+void get_user_infos(PGconn *conn , char *username , USER_T* user_info);
 #endif

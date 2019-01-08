@@ -10,6 +10,7 @@
 
 void do_exit(PGconn *conn) {
     PQfinish(conn);
+    exit(-1);
 }
 
 /* int to char */
@@ -20,58 +21,7 @@ char* convert_int(int i){
 	return str ;
 }
 
-/* get different theme*/
 
-/*char** get_all_themes(PGconn *conn){
-
-    char *themes[5];
-    PGresult *res = PQexec(conn, "SELECT unnest(enum_range(NULL::theme))  ");    
-    
-    if (PQresultStatus(res) != PGRES_TUPLES_OK) {
-
-        printf("No data retrieved\n");        
-        PQclear(res);
-        do_exit(conn);
-    }       
-    
-    int rows = PQntuples(res);
-    
-    for(int i=0; i<rows; i++) {
-        
-        themes[i]= malloc(strlen(PQgetvalue(res, i, 0)) +1);
-	strcpy(themes[i],PQgetvalue(res, i, 0));
-    }
-	return *themes[5];
-}*/
-
-/*get different guest
-
-char* get_all_guests(PGconn *conn , char *guests){
-
-    guests = malloc(sizeof(char*) * 2);
-    PGresult *res = PQexec(conn, "SELECT unnest(enum_range(NULL::guest))  ");    
-    
-    if (PQresultStatus(res) != PGRES_TUPLES_OK) {
-
-        printf("No data retrieved\n");        
-        PQclear(res);
-        do_exit(conn);
-    }       
-    
-    int rows = PQntuples(guests);
-    
-    for(int i=0; i<rows; i++) {
-
-        guests[i] = PQgetvalue(res, i, 0);
-    }
-	
-}
-
-*/
-
-
-
-/* connexion : verfier username et login */
 
 bool test_login(PGconn *conn ,char* username , char* password ){
 	const char *values_up[2] = {(char *)password ,(char *)username};
@@ -162,8 +112,40 @@ int add_user(PGconn *conn ,char* username ,char* password , char* email , char* 
 
 /*Create new Proposition */
 
-int add_event(PGconn *conn , char* time , char* date , char* adress , char* city , char* title , char* theme , char* guest , char* description , int capacity  , char* event_picture , char* deadline , char* organizer)
-{
+int add_event(PGconn *conn , char* time , char* date , char* adress , char* city , char* title , char* theme , char* guest , char* description , int capacity  , char* event_picture , char* deadline , char* organizer) {
+	if(strcmp(time, "?") == 0) {
+		time[0] = '\0';
+	}
+	if(strcmp(date, "?") == 0) {
+		date[0] = '\0';
+	}
+	if(strcmp(adress, "?") == 0) {
+		adress[0] = '\0';
+	}
+	if(strcmp(city, "?") == 0) {
+		city[0] = '\0';
+	}
+	if(strcmp(title, "?") == 0) {
+		title[0] = '\0';
+	}
+	if(strcmp(theme, "?") == 0) {
+		theme[0] = '\0';
+	}
+	if(strcmp(guest, "?") == 0) {
+		guest[0] = '\0';
+	}
+	if(strcmp(description, "?") == 0) {
+		description[0] = '\0';
+	}
+	if(strcmp(event_picture, "?") == 0) {
+		event_picture[0] = '\0';
+	}
+	if(strcmp(deadline, "?") == 0) {
+		deadline[0] = '\0';
+	}
+	if(strcmp(organizer, "?") == 0) {
+		organizer[0] = '\0';
+	}
 
 	printf("debut");
 	PGresult *res = PQexec(conn, "SELECT CURRENT_DATE");    
@@ -254,70 +236,95 @@ Event *db_get_recent_events(PGconn *conn , int *n, Event *events) {
 
 // search_events
 Event *search_events(PGconn *conn , int* n, int *state, Event *events, char* username, char* event_title, char* start_date, char* end_date, char* event_theme) {
-	PGresult *res;
-	if(strcmp(event_theme, "") == 0) {
-		const char *values_s[4] = { (char *)event_title, (char *)start_date , (char *)end_date ,(char *)username} ;
-
-		res= PQexecParams(conn,
-		"SELECT * FROM events where (STRPOS(event_title, $1)>0 OR $1='') AND (event_Date>=$2 OR $2 IS NULL) AND (event_Date>=$3 OR $3 IS NULL) AND 		(STRPOS(username_organizer, $4)>0 OR $4='')  AND confirmed AND deletion_date IS NULL",
-		4, //number of parameters
-		NULL, //ignore the Oid field
-		values_s, //values to substitute $1 and $2
-		NULL, //the lengths, in bytes, of each of the parameter values
-		NULL, //whether the values are binary or not
-		0); //we want the result in text format    
-	} else {
-		const char *values_s[5] = {(char*)event_title, (char*)start_date , (char*)end_date ,(char*)username , (char*)event_theme};
-		 res= PQexecParams(conn,
-		"SELECT * FROM events where (STRPOS(event_title, $1)>0 OR $1='') AND (event_Date>=$2 OR $2 IS NULL) AND (event_Date>=$3 OR $3 IS NULL) AND 		(STRPOS(username_organizer, $4)>0 OR $4='')  AND event_theme = $5 AND confirmed AND deletion_date IS NULL",
-		4, //number of parameters
-		NULL, //ignore the Oid field
-		values_s, //values to substitute $1 and $2
-		NULL, //the lengths, in bytes, of each of the parameter values
-		NULL, //whether the values are binary or not
-		0); //we want the result in text format  
+	if(strcmp(username, "?") == 0) {
+		username[0] = '\0';
 	}
-	
-    
-	    if (PQresultStatus(res) != PGRES_TUPLES_OK) {
-			printf("Aucun résultat\n");        
-			PQclear(res);
-			do_exit(conn);
-			*state = -1;
-			return NULL;
-		}       
-		int rows = PQntuples(res);
-		*n = rows;
-		events = malloc(sizeof(Event) *rows);
+	if(strcmp(event_title, "?") == 0) {
+		event_title[0] = '\0';
+	}
+	if(strcmp(event_theme, "?") == 0) {
+		event_theme[0] = '\0';
+	}
+	PGresult *res;
+	const char *values_s[4] = { (char *)event_title, (char *)start_date , (char *)end_date ,(char *)username};
 
-		for(int i=0; i<rows; i++) {
-			events[i].event_id = PQgetvalue(res, i,0); 
-			events[i].event_time = PQgetvalue(res, i,1); 
-			events[i].event_date = PQgetvalue(res, i,2); 
-			events[i].event_address = PQgetvalue(res, i,3); 
-			events[i].event_city = PQgetvalue(res, i,4); 
-			events[i].event_title = PQgetvalue(res, i,5); 
-			events[i].event_theme = PQgetvalue(res, i,6); 
-			events[i].event_guest = PQgetvalue(res, i,7); 
-			events[i].description = PQgetvalue(res, i,8); 
-			events[i].capacity = PQgetvalue(res, i,9); 
-			events[i].event_picture = PQgetvalue(res, i,10); 
-			events[i].confirmed = PQgetvalue(res, i,11); 
-			events[i].deadline_date = PQgetvalue(res, i,12); 
-			events[i].proposition_date = PQgetvalue(res, i,13); 
-			events[i].confirmation_date = PQgetvalue(res, i,14); 
-			events[i].modification_date = PQgetvalue(res, i,15); 
-			events[i].deletion_date = PQgetvalue(res, i,16); 
-			events[i].username_organizer = PQgetvalue(res, i,17); 
-			events[i].discussion_id = PQgetvalue(res, i,18); 
-			events[i].state = malloc(sizeof(char) * 2048);
-			strcpy(events[i].state, "NOT_POSSIBLE\n");
-		}
+	res= PQexecParams(conn,
+		"SELECT * FROM events where (STRPOS(event_title, $1)>0 OR $1='') AND (event_Date>=$2 OR $2 IS NULL) AND (event_Date>=$3 OR $3 IS NULL) AND (STRPOS(username_organizer, $4)>0 OR $4='')  AND confirmed AND deletion_date IS NULL",
+		4, //number of parameters
+		NULL, //ignore the Oid field
+		values_s, //values to substitute $1 and $2
+		NULL, //the lengths, in bytes, of each of the parameter values
+		NULL, //whether the values are binary or not
+		0
+	); //we want the result in text format    
+
+	if (PQresultStatus(res) != PGRES_TUPLES_OK) {
+		printf("Aucun résultat\n");
+		PQclear(res);
+		do_exit(conn);
+	}
+	int rows = PQntuples(res);
+	*n = rows;
+	events = malloc(sizeof(Event) *rows);
+
+	for(int i=0; i<rows; i++) {
+		events[i].event_id = PQgetvalue(res, i,0); 
+		events[i].event_time = PQgetvalue(res, i,1); 
+		events[i].event_date = PQgetvalue(res, i,2); 
+		events[i].event_address = PQgetvalue(res, i,3); 
+		events[i].event_city = PQgetvalue(res, i,4); 
+		events[i].event_title = PQgetvalue(res, i,5); 
+		events[i].event_theme = PQgetvalue(res, i,6); 
+		events[i].event_guest = PQgetvalue(res, i,7); 
+		events[i].description = PQgetvalue(res, i,8); 
+		events[i].capacity = PQgetvalue(res, i,9); 
+		events[i].event_picture = PQgetvalue(res, i,10); 
+		events[i].confirmed = PQgetvalue(res, i,11); 
+		events[i].deadline_date = PQgetvalue(res, i,12); 
+		events[i].proposition_date = PQgetvalue(res, i,13); 
+		events[i].confirmation_date = PQgetvalue(res, i,14); 
+		events[i].modification_date = PQgetvalue(res, i,15); 
+		events[i].deletion_date = PQgetvalue(res, i,16); 
+		events[i].username_organizer = PQgetvalue(res, i,17); 
+		events[i].discussion_id = PQgetvalue(res, i,18); 
+		events[i].state = malloc(sizeof(char) * 2048);
+		strcpy(events[i].state, "NOT_POSSIBLE\n");
+	}
 	*state = 1;
 	return events ;
 }
 
+void get_user_infos(PGconn *conn , char *username , USER_T* user_info){
+	const char *values[1] = {(char *)username};
+	PGresult *res_u = PQexecParams(
+	conn,
+	"SELECT * FROM users WHERE username= $1",
+	1, //number of parameters
+	NULL, //ignore the Oid field
+	values, //values to substitute $1 and $2
+	NULL, //the lengths, in bytes, of each of the parameter values
+	NULL, //whether the values are binary or not
+	0); //we want the result in text format
 
+
+	if (PQresultStatus(res_u) != PGRES_TUPLES_OK)
+	{
+		fprintf(stderr, "SELECT failed: %s", PQerrorMessage(conn));
+		PQclear(res_u);	
+		
+	}else{
+
+		user_info->l_name = PQgetvalue(res_u, 0,2);
+		user_info->f_name = PQgetvalue(res_u, 0,3);
+		user_info->email = PQgetvalue(res_u, 0,1);
+		user_info->tel = PQgetvalue(res_u, 0,6);
+		user_info->birth_date = PQgetvalue(res_u, 0,5);
+		user_info->birth_place = PQgetvalue(res_u, 0,7);
+		user_info->description = PQgetvalue(res_u, 0,4);
+
+	}
+	
+}
 
 PGconn* db_connect() {
 	
